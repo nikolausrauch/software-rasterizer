@@ -15,7 +15,7 @@ struct Varying
     Vec4 position;
     Vec2 uv;
 
-    VARYING( VAL(position), VAL(uv) );
+    VARYING( position, uv );
 };
 
 struct Uniforms

@@ -18,6 +18,7 @@
 #include "math/rectangle.h"
 
 #include "detail/test_member.h"
+#include "detail/tuple_iter.h"
 
 struct Renderer
 {
@@ -28,31 +29,13 @@ struct Renderer
     template<typename Vertex, typename Varying, typename Uniforms>
     void draw(const Program<Vertex, Varying, Uniforms>& program, const struct Buffer<Vertex>& buffer)
     {
-        assert(program.m_vertShader);
-        assert(program.m_fragShader);
-
-        std::vector<Varying> pipeline_data(buffer.vertices.size());
-        process_vertices(buffer.vertices, pipeline_data, program);
-
-        switch(buffer.primitive)
-        {
-        case ePrimitive::TRIANGLES: draw_triangles(pipeline_data, program, m_framebuffer);
-        }
+        draw(program, buffer, m_framebuffer);
     }
 
     template<typename Vertex, typename Varying, typename Uniforms, typename Indx>
     void draw(const Program<Vertex, Varying, Uniforms>& program, const struct BufferIndexed<Vertex, Indx>& buffer)
     {
-        assert(program.m_vertShader);
-        assert(program.m_fragShader);
-
-        std::vector<Varying> pipeline_data(buffer.indices.size());
-        process_vertices(buffer.vertices, buffer.indices, pipeline_data, program);
-
-        switch(buffer.primitive)
-        {
-        case ePrimitive::TRIANGLES: draw_triangles(pipeline_data, program, m_framebuffer);
-        }
+        draw(program, buffer, m_framebuffer);
     }
 
     template<typename Vertex, typename Varying, typename Uniforms>
@@ -100,8 +83,8 @@ private:
             out[i].position.z *= out[i].position.w;
 
             // screen space (viewport mapping)
-            out[i].position.x = m_options.viewport.min.x + (out[i].position.x + 1.0) / 2.0 * (m_options.viewport.max.x - m_options.viewport.min.x);
-            out[i].position.y = m_options.viewport.min.y + (out[i].position.y + 1.0) / 2.0 * (m_options.viewport.max.y - m_options.viewport.min.y);
+            out[i].position.x = m_options.viewport.min.x + (out[i].position.x + 1.0f) / 2.0f * (m_options.viewport.max.x - m_options.viewport.min.x);
+            out[i].position.y = m_options.viewport.min.y + (out[i].position.y + 1.0f) / 2.0f * (m_options.viewport.max.y - m_options.viewport.min.y);
         }
     }
 
@@ -119,8 +102,8 @@ private:
             out[i].position.z *= out[i].position.w;
 
             // screen space (viewport mapping)
-            out[i].position.x = m_options.viewport.min.x + (out[i].position.x + 1.0) / 2.0 * (m_options.viewport.max.x - m_options.viewport.min.x);
-            out[i].position.y = m_options.viewport.min.y + (out[i].position.y + 1.0) / 2.0 * (m_options.viewport.max.y - m_options.viewport.min.y);
+            out[i].position.x = m_options.viewport.min.x + (out[i].position.x + 1.0f) / 2.0f * (m_options.viewport.max.x - m_options.viewport.min.x);
+            out[i].position.y = m_options.viewport.min.y + (out[i].position.y + 1.0f) / 2.0f * (m_options.viewport.max.y - m_options.viewport.min.y);
         }
     }
 
@@ -156,7 +139,7 @@ private:
                 // linear interpolate in screen space
                 float w = bc.x * v_0.position.w + bc.y * v_1.position.w + bc.z * v_2.position.w;
                 float z = bc.x * v_0.position.z + bc.y * v_1.position.z + bc.z * v_2.position.z;
-                z = z * 0.5f + 0.5;
+                z = z * 0.5f + 0.5f;
 
                 // TODO: culling, clipping should happen earlier
                 if(0.0f > z || z > 1.0f) continue;
@@ -187,16 +170,14 @@ private:
     template<typename Varying>
     void interpolate_frag_data(const Vec3& bc, const Varying& v_0, const Varying& v_1, const Varying& v_2, Varying& result)
     {
-        #define VAL(param) \
-        [](const Vec3& bc, const Varying& v_0, const Varying& v_1, const Varying& v_2, Varying& result) \
-        { result. param = bc.x * v_0. param + bc.y * v_1. param + bc.z * v_2. param; }
+        #define VARYING(...) decltype(std::tie( __VA_ARGS__ )) _reflect = std::tie( __VA_ARGS__ );
 
-        #define VARYING(...) std::vector<void (*)(const Vec3& bc, const Varying& v_0, const Varying& v_1, const Varying& v_2, Varying& result)> _interpolate = { __VA_ARGS__ };
-
-        for(const auto& interpolate : result._interpolate)
+        auto interpolate = [bc](const auto& x0, const auto& x1, const auto& x2, auto& res)
         {
-            interpolate(bc, v_0, v_1, v_2, result);
-        }
+            res = bc.x * x0 + bc.y * x1 + bc.z * x2;
+        };
+
+        detail::iter_tuple(interpolate, v_0._reflect, v_1._reflect, v_2._reflect, result._reflect);
     }
 
 private:

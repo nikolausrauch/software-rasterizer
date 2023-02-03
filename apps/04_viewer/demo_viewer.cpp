@@ -20,7 +20,7 @@ struct Varying
     Vec4 position;
     Vec3 color;
 
-    VARYING( VAL(position), VAL(color) );
+    VARYING( position, color );
 };
 
 struct Uniforms

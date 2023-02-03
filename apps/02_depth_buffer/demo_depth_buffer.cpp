@@ -21,8 +21,12 @@ struct Varying
     Vec4 position;
     Vec3 color;
 
-    VARYING( VAL(position), VAL(color) );
+    std::tuple<Vec4&, Vec3&> _reflect = {position, color};
+
+    //VARYING( VAL(position), VAL(color) );
 };
+
+//VARYING( VAL(position), VAL(color) );
 
 /* uniform struct accessable from both "shaders" */
 struct Uniforms

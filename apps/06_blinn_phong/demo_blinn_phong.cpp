@@ -46,7 +46,7 @@ struct Varying
     Vec3 normal;
     Vec3 world_position;
 
-    VARYING( VAL(position), VAL(uv), VAL(normal), VAL(world_position) );
+    VARYING( position, uv, normal, world_position );
 };
 
 struct Uniforms

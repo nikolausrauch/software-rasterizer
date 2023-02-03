@@ -2,6 +2,8 @@
 
 #include "texture.h"
 
+#include <algorithm>
+
 template<typename T>
 struct Sampler;
 

@@ -4,6 +4,7 @@
 #include <stb_image/stb_image.h>
 
 #include <cstring>
+#include <algorithm>
 
 template<>
 bool save_texture(const Texture<Color> &texture, const std::string &filepath)

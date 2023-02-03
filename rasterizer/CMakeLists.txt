@@ -33,6 +33,7 @@ set( HDR
     "${CMAKE_CURRENT_SOURCE_DIR}/math/rectangle.h"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/detail/test_member.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/detail/tuple_iter.h"
     )
 
 set( RASTERIZER_SRC ${SRC} )
