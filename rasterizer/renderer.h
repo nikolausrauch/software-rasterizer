@@ -20,57 +20,71 @@
 #include "detail/test_member.h"
 #include "detail/tuple_iter.h"
 
+#include <cassert>
+
 struct Renderer
 {
+    /* rasterizer options */
+    struct Options
+    {
+        Rectf viewport;
+        bool culling;
+    };
+
+
     Renderer(unsigned int width, unsigned int height);
 
     Framebuffer& framebuffer();
+    Options& options();
+
+
 
     template<typename Vertex, typename Varying, typename Uniforms>
     void draw(const Program<Vertex, Varying, Uniforms>& program, const struct Buffer<Vertex>& buffer)
     {
-        draw(program, buffer, m_framebuffer);
+        draw(program, buffer, m_framebuffer, m_options);
     }
 
     template<typename Vertex, typename Varying, typename Uniforms, typename Indx>
     void draw(const Program<Vertex, Varying, Uniforms>& program, const struct BufferIndexed<Vertex, Indx>& buffer)
     {
-        draw(program, buffer, m_framebuffer);
+        draw(program, buffer, m_framebuffer, m_options);
     }
 
     template<typename Vertex, typename Varying, typename Uniforms>
-    void draw(const Program<Vertex, Varying, Uniforms>& program, const struct Buffer<Vertex>& buffer, Framebuffer& fb)
+    void draw(const Program<Vertex, Varying, Uniforms>& program, const struct Buffer<Vertex>& buffer, Framebuffer& fb, const Options& options)
     {
         assert(program.m_vertShader);
         assert(program.m_fragShader);
 
         std::vector<Varying> pipeline_data(buffer.vertices.size());
-        process_vertices(buffer.vertices, pipeline_data, program);
+        process_vertices(buffer.vertices, pipeline_data, program, options);
 
         switch(buffer.primitive)
         {
-        case ePrimitive::TRIANGLES: draw_triangles(pipeline_data, program, fb);
+        case ePrimitive::TRIANGLES: draw_triangles(pipeline_data, program, fb, options);
         }
     }
 
     template<typename Vertex, typename Varying, typename Uniforms, typename Indx>
-    void draw(const Program<Vertex, Varying, Uniforms>& program, const struct BufferIndexed<Vertex, Indx>& buffer, Framebuffer& fb)
+    void draw(const Program<Vertex, Varying, Uniforms>& program, const struct BufferIndexed<Vertex, Indx>& buffer, Framebuffer& fb, const Options& options)
     {
         assert(program.m_vertShader);
         assert(program.m_fragShader);
 
         std::vector<Varying> pipeline_data(buffer.indices.size());
-        process_vertices(buffer.vertices, buffer.indices, pipeline_data, program);
+        process_vertices(buffer.vertices, buffer.indices, pipeline_data, program, options);
 
         switch(buffer.primitive)
         {
-        case ePrimitive::TRIANGLES: draw_triangles(pipeline_data, program, fb);
+        case ePrimitive::TRIANGLES: draw_triangles(pipeline_data, program, fb, options);
         }
     }
 
+
 private:
     template<typename Vertex, typename Varying, typename Uniforms>
-    void process_vertices(const std::vector<Vertex>& vertices, std::vector<Varying>& out, const Program<Vertex, Varying, Uniforms>& program)
+    void process_vertices(const std::vector<Vertex>& vertices, std::vector<Varying>& out, const Program<Vertex, Varying, Uniforms>& program, const Options& options)
     {
         for(unsigned int i = 0; i < vertices.size(); i++)
         {
@@ -83,13 +97,13 @@ private:
             out[i].position.z *= out[i].position.w;
 
             // screen space (viewport mapping)
-            out[i].position.x = m_options.viewport.min.x + (out[i].position.x + 1.0f) / 2.0f * (m_options.viewport.max.x - m_options.viewport.min.x);
-            out[i].position.y = m_options.viewport.min.y + (out[i].position.y + 1.0f) / 2.0f * (m_options.viewport.max.y - m_options.viewport.min.y);
+            out[i].position.x = options.viewport.min.x + (out[i].position.x + 1.0f) / 2.0f * (options.viewport.max.x - options.viewport.min.x);
+            out[i].position.y = options.viewport.min.y + (out[i].position.y + 1.0f) / 2.0f * (options.viewport.max.y - options.viewport.min.y);
         }
     }
 
     template<typename Vertex, typename Varying, typename Uniforms, typename Indx>
-    void process_vertices(const std::vector<Vertex>& vertices, const std::vector<Indx>& indices, std::vector<Varying>& out, const Program<Vertex, Varying, Uniforms>& program)
+    void process_vertices(const std::vector<Vertex>& vertices, const std::vector<Indx>& indices, std::vector<Varying>& out, const Program<Vertex, Varying, Uniforms>& program, const Options& options)
     {
         for(unsigned int i = 0; i < indices.size(); i++)
         {
@@ -102,31 +116,31 @@ private:
             out[i].position.z *= out[i].position.w;
 
             // screen space (viewport mapping)
-            out[i].position.x = m_options.viewport.min.x + (out[i].position.x + 1.0f) / 2.0f * (m_options.viewport.max.x - m_options.viewport.min.x);
-            out[i].position.y = m_options.viewport.min.y + (out[i].position.y + 1.0f) / 2.0f * (m_options.viewport.max.y - m_options.viewport.min.y);
+            out[i].position.x = options.viewport.min.x + (out[i].position.x + 1.0f) / 2.0f * (options.viewport.max.x - options.viewport.min.x);
+            out[i].position.y = options.viewport.min.y + (out[i].position.y + 1.0f) / 2.0f * (options.viewport.max.y - options.viewport.min.y);
         }
     }
 
     template<typename Vertex, typename Varying, typename Uniforms>
-    void draw_triangles(const std::vector<Varying>& in, const Program<Vertex, Varying, Uniforms>& program, Framebuffer& fb)
+    void draw_triangles(const std::vector<Varying>& in, const Program<Vertex, Varying, Uniforms>& program, Framebuffer& fb, const Options& options)
     {
         for(unsigned int i = 0; i < in.size() / 3; i++)
         {
-            draw_triangle(in[i*3 + 0], in[i*3 + 1], in[i*3 + 2], program, fb);
+            draw_triangle(in[i*3 + 0], in[i*3 + 1], in[i*3 + 2], program, fb, options);
         }
     }
 
     template<typename Vertex, typename Varying, typename Uniforms>
-    void draw_triangle(const Varying& v_0, const Varying& v_1, const Varying& v_2, const Program<Vertex, Varying, Uniforms>& program, Framebuffer& fb)
+    void draw_triangle(const Varying& v_0, const Varying& v_1, const Varying& v_2, const Program<Vertex, Varying, Uniforms>& program, Framebuffer& fb, const Options& options)
     {
-        if(m_options.culling)
+        if(options.culling)
         {
             auto normal = cross(Vec3(v_1.position) - Vec3(v_0.position), Vec3(v_2.position) - Vec3(v_0.position));
             if(normal.z < 0.0f) return;
         }
 
         Recti bbox(v_0.position, v_1.position, v_2.position);
-        bbox.clamp(m_options.viewport, 0, -1);
+        bbox.clamp(options.viewport, 0, -1);
 
         for(int x = bbox.min.x; x <= bbox.max.x; x++)
         {
@@ -141,7 +155,7 @@ private:
                 float z = bc.x * v_0.position.z + bc.y * v_1.position.z + bc.z * v_2.position.z;
                 z = z * 0.5f + 0.5f;
 
-                // TODO: culling, clipping should happen earlier
+                // TODO: clipping should happen earlier
                 if(0.0f > z || z > 1.0f) continue;
 
                 // early depth test
@@ -182,10 +196,5 @@ private:
 
 private:
     Framebuffer m_framebuffer;
-
-    struct Options
-    {
-        Rectf viewport;
-        bool culling;
-    } m_options;
+    Options m_options;
 };

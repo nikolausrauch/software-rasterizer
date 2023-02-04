@@ -10,6 +10,7 @@ template<typename Vertex, typename Varying, typename Uniforms>
 struct Program
 {
     static_assert (detail::has_member<Varying>::position::value, "Output of Vertex Stage needs Vec4 position!");
+    static_assert (detail::has_member<Varying>::_reflect::value, "Output of Vertex Stage needs interpolated positional values. Did you forget to set VARYING(position) macro? ");
 
     typedef std::function< void (const Uniforms& uniforms, const Vertex& in, Varying& out) > VertexShader;
     typedef std::function< void (const Uniforms& uniforms, const Varying& in, Vec4& out) > FragmentShader;

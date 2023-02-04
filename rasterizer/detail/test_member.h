@@ -16,11 +16,8 @@ struct has_member
 
     /* vertex members */
     property(position)
-    property(color)
-    property(uv)
-    property(normal)
-    property(world_position)
-    property(model_position)
+    property(_reflect)
+
 
 #undef test_one
 #undef test_two

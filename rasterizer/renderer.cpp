@@ -11,3 +11,8 @@ Framebuffer &Renderer::framebuffer()
 {
     return m_framebuffer;
 }
+
+Renderer::Options& Renderer::options()
+{
+    return m_options;
+}
