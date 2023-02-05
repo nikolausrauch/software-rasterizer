@@ -8,4 +8,4 @@ add_subdirectory(04_framebuffer)
 add_subdirectory(05_viewer)
 add_subdirectory(06_model)
 add_subdirectory(07_blinn_phong)
-
+add_subdirectory(08_normal_mapping)

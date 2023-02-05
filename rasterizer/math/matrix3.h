@@ -2,6 +2,8 @@
 
 #include "vector3.h"
 
+template<typename U> struct Matrix4;
+
 template<typename T>
 struct Matrix3
 {
@@ -21,6 +23,15 @@ struct Matrix3
         n[0][0] = n00; n[0][1] = n10; n[0][2] = n20;
         n[1][0] = n01; n[1][1] = n11; n[1][2] = n21;
         n[2][0] = n02; n[2][1] = n12; n[2][2] = n22;
+    }
+
+
+    template<typename U>
+    Matrix3(const Matrix4<U>& M)
+    {
+        n[0][0] = M(0,0);   n[0][1] = M(1,0);   n[0][2] = M(2,0);
+        n[1][0] = M(0,1);   n[1][1] = M(1,1);   n[1][2] = M(2,1);
+        n[2][0] = M(0,2);   n[2][1] = M(1,2);   n[2][2] = M(2,2);
     }
 
     T& operator ()(int i, int j)

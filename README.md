@@ -30,7 +30,7 @@ A software-rasterizer in C++, that I wrote to get a basic understanding of the O
     - [x] model loading
   - [x] Blinn-Phong illumination
   - [ ] Cel Shading
-  - [ ] Normal Mapping
+  - [x] Normal Mapping
   - [ ] Shadow Mapping
   - [ ] Screen Space Ambient Occlusion
   - [ ] Physically-based rendering     
@@ -121,6 +121,10 @@ Model Loading and Texture Mapping ("Sad toaster" [Link](https://skfb.ly/on9Dn) b
 Blinn-Phong Illumination (Phong Shading)
 
 ![alt](img/example_blinn_phong.jpg)
+
+Normal Mapping ("Cartridge" [Link](https://sketchfab.com/3d-models/gameboy-cartridge-7c0160c8097a43e0a5e146bf4d7e01a1) by Karolina D)
+
+![alt](img/example_normal_mapping.png)
 
 ## :books: Useful Resources
 [Tiny Renderer](https://github.com/ssloy/tinyrenderer/wiki/Lesson-0:-getting-started)

@@ -1,0 +1,11 @@
+Model Information:
+* title:	Gameboy Cartridge
+* source:	https://sketchfab.com/3d-models/gameboy-cartridge-7c0160c8097a43e0a5e146bf4d7e01a1
+* author:	Karolina D (https://sketchfab.com/KarolinaArts)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Gameboy Cartridge" (https://sketchfab.com/3d-models/gameboy-cartridge-7c0160c8097a43e0a5e146bf4d7e01a1) by Karolina D (https://sketchfab.com/KarolinaArts) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

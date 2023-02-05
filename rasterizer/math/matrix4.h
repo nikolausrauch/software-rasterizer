@@ -144,6 +144,23 @@ struct Matrix4
                     0.0f,                   0.0f,                   0.0f,                   1.0f
                     );
     }
+
+    template<typename t = T, typename std::enable_if_t<std::is_floating_point_v<t>, int> = 0>
+    static Matrix4 lookAt(const Vector3<T> &pos, const Vector3<T> &at, const Vector3<T> &up = {0, 1, 0})
+    {
+        auto front = normalize(at - pos);
+        auto right = normalize(cross(front, up));
+        auto up_ = normalize(cross(right, front));
+
+        Matrix4 rotation(
+                 right.x,    right.y,    right.z,    0.0f,
+                 up_.x,      up_.y,      up_.z,       0.0f,
+                -front.x,   -front.y,   -front.z,    0.0f,
+                 0.0f,       0.0f,       0.0f,       1.0f
+                );
+
+        return  rotation * Matrix4::translation(-pos);
+    }
 };
 
 template<typename T, typename U>
