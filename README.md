@@ -2,6 +2,9 @@
 
 A software-rasterizer in C++, that I wrote to get a basic understanding of the OpenGL graphics pipeline.
 
+![alt](img/banner.png)
+l.t.r. ["Sad toaster"](https://skfb.ly/on9Dn) by tasha.lime, ["Coatlicue"](https://sketchfab.com/3d-models/coatlicue-dd61c5e8c8734d9399d57c2ad04ec226) by aptass, ["Gameboy Cartridge"](https://sketchfab.com/3d-models/gameboy-cartridge-7c0160c8097a43e0a5e146bf4d7e01a1) by Karolina D, ["Demon Skull"](https://sketchfab.com/3d-models/demon-skull-0cb0efd8bd8a405f89ce5f757ecf6e8d) by Auxiar Molkhun
+
 ## Features
 
 - C++ implementation
@@ -118,13 +121,9 @@ Model Loading and Texture Mapping ("Sad toaster" [Link](https://skfb.ly/on9Dn) b
 
 ![alt](img/example_model.jpg)
 
-Blinn-Phong Illumination (Phong Shading)
+Blinn-Phong Illumination with diffuse, normal and ambient occlusion map ("Demon Skull" [Link](https://sketchfab.com/3d-models/demon-skull-0cb0efd8bd8a405f89ce5f757ecf6e8d) by Auxiar Molkhun)
 
-![alt](img/example_blinn_phong.jpg)
-
-Normal Mapping ("Cartridge" [Link](https://sketchfab.com/3d-models/gameboy-cartridge-7c0160c8097a43e0a5e146bf4d7e01a1) by Karolina D)
-
-![alt](img/example_normal_mapping.png)
+![alt](img/example_ao_map.png)
 
 Shadow Mapping (based on "low poly house" [Link](https://sketchfab.com/3d-models/low-poly-house-02635c7c191848699e88085c2ab27538) by [cofitelle](https://sketchfab.com/cofitelle) licensed under CC-BY-4.0 [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/))
 

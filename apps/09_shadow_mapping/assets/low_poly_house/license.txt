@@ -1,3 +1,5 @@
+This model was modified by Nikolaus Rauch (stripped of detailed geometry and reduced material properties).
+
 Model Information:
 * title:	low poly house
 * source:	https://sketchfab.com/3d-models/low-poly-house-02635c7c191848699e88085c2ab27538
