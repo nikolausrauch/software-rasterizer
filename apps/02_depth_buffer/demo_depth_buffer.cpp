@@ -38,13 +38,6 @@ struct Uniforms
 
 int main(int argc, char** argv)
 {
-    /* rasterizer with framebuffer size */
-    Renderer rasterizer(1280, 720);
-
-    /* clear framebuffer */
-    rasterizer.framebuffer().clear(Vec4(0, 0, 0, 1));
-
-
     /*========== Setup Shader Program ========*/
     Program<Vertex, Varying, Uniforms> program;
     program.onVertex([](const Uniforms& uniform, const Vertex& in, Varying& out)
@@ -113,6 +106,12 @@ int main(int argc, char** argv)
         7, 3, 0
     };
 
+
+    /* rasterizer with framebuffer size */
+    Renderer rasterizer(1280, 720);
+
+    /* clear framebuffer */
+    rasterizer.framebuffer().clear(Vec4(0, 0, 0, 1));
 
     /* submit draw call */
     uniforms.model = Mat4::translation({-0.5, 0.2, 1.5}) * Mat4::scale(0.2, 0.2, 0.2);

@@ -22,7 +22,7 @@ struct Vertex
 
 struct Material
 {
-    Texture<Color> map_diffuse;
+    Texture<RGBA8> map_diffuse;
 };
 
 /* Mesh definition (Vertex and Material --> see model.h for all possible members) */
@@ -45,7 +45,7 @@ struct Uniforms
 
     struct
     {
-        Sampler<Color> diffuse;
+        Sampler<RGBA8> diffuse;
     } material;
 };
 

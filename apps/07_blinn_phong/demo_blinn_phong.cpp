@@ -128,9 +128,6 @@ int main(int argc, char** argv)
     {
         rasterizer.framebuffer().clear(Vec4(0, 0, 0, 1));
 
-        static float time = 0.0;
-        time += dt;
-
         uniforms.light.position = Mat3::rotationY(-radians(dt*20.0f)) * uniforms.light.position;
         TIME_MS(rasterizer.draw(program, buffer));
 

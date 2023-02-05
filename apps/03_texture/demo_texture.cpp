@@ -20,16 +20,11 @@ struct Varying
 
 struct Uniforms
 {
-    Sampler<Color> texture;
+    Sampler<RGBA8> texture;
 };
 
 int main(int argc, char** argv)
 {
-    Renderer rasterizer(480, 480);
-
-    rasterizer.framebuffer().clear(Vec4(0.2, 0.2, 0.2, 1));
-
-
     /*========== Setup Shader Program ========*/
     Program<Vertex, Varying, Uniforms> program;
     program.onVertex([](const Uniforms& uniform, const Vertex& in, Varying& out)
@@ -54,11 +49,15 @@ int main(int argc, char** argv)
 
 
     /*========== Load Texture and set uniform ========*/
-    Texture<Color> texture;
+    Texture<RGBA8> texture;
     texture.load("assets/grid.png");
     program.uniforms().texture = texture;
     program.uniforms().texture.filter = eFilter::NEAREST;
 
+
+    Renderer rasterizer(480, 480);
+
+    rasterizer.framebuffer().clear(Vec4(0.2, 0.2, 0.2, 1));
 
     /* submit draw call */
     rasterizer.draw(program, buffer);

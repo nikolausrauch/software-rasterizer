@@ -47,12 +47,12 @@ struct _AllMaterial
     float ior;
     float dissolve;
 
-    Texture<Color> map_ambient;
-    Texture<Color> map_diffuse;
-    Texture<Color> map_specular;
-    Texture<Color> map_specular_highlight;
-    Texture<Color> map_bump;
-    Texture<Color> map_displacement;
+    Texture<RGBA8> map_ambient;
+    Texture<RGBA8> map_diffuse;
+    Texture<RGBA8> map_specular;
+    Texture<RGBA8> map_specular_highlight;
+    Texture<RGBA8> map_bump;
+    Texture<RGBA8> map_displacement;
 };
 
 

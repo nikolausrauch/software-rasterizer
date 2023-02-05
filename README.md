@@ -1,25 +1,48 @@
 # CPU Software Rasterizer
 
-A simple software-rasterizer in C++, that I wrote to get a basic understanding of the OpenGL graphics pipeline.
+A software-rasterizer in C++, that I wrote to get a basic understanding of the OpenGL graphics pipeline.
 
 ## Features
+
 - C++ implementation
-  - generic vertex and fragment attributes
-  - programmable vertex and fragment shader (functors)
-  - small math library for handling 2D, 3D, 4D vectors and 2x2, 3x3, 4x4 matrices
-  - .obj and .mat loading
-  - GLFW/OpenGL viewer (uploads framebuffer each frame)
-- perspective-correct attribute interpolation
-- z-buffering
-- texture mapping with filter (nearest, linear)
+  - [x] generic vertex and fragment attributes
+  - [x] programmable vertex and fragment shader (functors)
+  - [x] generic framebuffer targets (for "offscreen" rendering) 
+  - [x] small math library (2D, 3D, 4D vectors and 2x2, 3x3, 4x4 matrices)
+  - [x] .obj and .mat loading
+  - [x] GLFW/OpenGL viewer (uploads framebuffer each frame)
+- Rasterizer
+  - [x] perspective-correct attribute interpolation
+  - [x] z-buffering
+  - [x] texture mapping with sampler specific filter (nearest, linear)
+  - [x] face culling
+  - [x] custom framebuffer
+  - [ ] line rendering
+  - [ ] wireframe rendering
+  - [ ] cubemap
+- Examples
+  - [x] minimal examples
+    - [x] colored triangle
+    - [x] index buffer
+    - [x] texture and sampler
+    - [x] custom framebuffer
+    - [x] glfw/gl viewer
+    - [x] model loading
+  - [x] Blinn-Phong illumination
+  - [ ] Cel Shading
+  - [ ] Normal Mapping
+  - [ ] Shadow Mapping
+  - [ ] Screen Space Ambient Occlusion
+  - [ ] Physically-based rendering     
 
 ## Examples
 
 ### Minimal setup (colored triangle)
 
-Similar to traditional Graphic APIs we define the input and output of the vertex shader stage; the data passing through the rasterization pipeline.
+Similar to traditional Graphic APIs we define the input and output of the shader stages, i.e. the data passing through the rasterization pipeline.
 
-All data members from `Varying` contained in the `VARYING(...)` macro are automatically interpolated per fragment by the rasterizer. 
+All members from `Varying` contained in the `VARYING(...)` macro are interpolated per fragment by the rasterizer.
+Note, that it is mandatory to have a `Vec4 position` interpolated attribute.
 ```cpp
 /* vertex data -> input to draw call (via Buffer) */
 struct Vertex
@@ -44,7 +67,7 @@ struct Varying
 /* uniform struct accessable from both "shaders" */
 struct Uniforms {};
 ```
-Vertex and fragment shaders are written as function objects which need to be set accordingly with `onVertex` and `onFragment` (currently no default shader). 
+Vertex and fragment shaders are written as function objects which need to be set accordingly with `onVertex` and `onFragment` (currently no default shader).
 ```cpp
 Program<Vertex, Varying, Uniforms> program;
 program.onVertex([](const Uniforms& uniform, const Vertex& in, Varying& out)
@@ -71,7 +94,7 @@ buffer.vertices = { { {-0.5, -0.5, 0.5}, {1.0, 0.0, 0.0} },
 ```
 An instance of `Renderer` contains a default framebuffer with a color and depth target.
 
-After clearing the framebuffer, we can submit a draw call with the previously defined shader program and vertex buffer.
+After clearing the framebuffer, we submit a draw call with the previously defined shader program and vertex buffer.
 
 <img src="img/00_triangle.png" align="right" height=250px>
 

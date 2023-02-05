@@ -26,7 +26,7 @@ struct Window
     void onUpdate(const UpdateCallback& cb);
     void onResize(const ResizeCallback& cb);
 
-    void swap(Framebuffer& framebuffer);
+    void swap(DefaultFramebuffer& framebuffer);
 
     void run();
 

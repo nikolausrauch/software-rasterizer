@@ -173,7 +173,7 @@ void Window::onResize(const ResizeCallback &cb)
     m_resize_cb = cb;
 }
 
-void Window::swap(Framebuffer &framebuffer)
+void Window::swap(DefaultFramebuffer &framebuffer)
 {
     auto& buffer = framebuffer.color();
 

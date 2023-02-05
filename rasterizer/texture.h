@@ -92,9 +92,9 @@ bool save_texture(const Texture<T>& texture, const std::string& filepath)
 }
 
 
-typedef Vector4<std::uint8_t> Color;
-template<> bool load_texture(Texture<Color>& texture, const std::string& filepath);
-template<> bool save_texture(const Texture<Color>& texture, const std::string& filepath);
+typedef Vector4<std::uint8_t> RGBA8;
+template<> bool load_texture(Texture<RGBA8>& texture, const std::string& filepath);
+template<> bool save_texture(const Texture<RGBA8>& texture, const std::string& filepath);
 
 typedef float Depth;
 template<> bool save_texture(const Texture<Depth>& texture, const std::string& filepath);

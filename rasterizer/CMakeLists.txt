@@ -12,7 +12,6 @@ project( rasterizer )
 set( SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/renderer.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/texture.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/framebuffer.cpp"
     )
 
 set( HDR
@@ -33,7 +32,7 @@ set( HDR
     "${CMAKE_CURRENT_SOURCE_DIR}/math/rectangle.h"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/detail/test_member.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/detail/tuple_iter.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/detail/tuple_helper.h"
     )
 
 set( RASTERIZER_SRC ${SRC} )

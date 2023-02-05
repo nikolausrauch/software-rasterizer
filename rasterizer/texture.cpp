@@ -7,7 +7,7 @@
 #include <algorithm>
 
 template<>
-bool save_texture(const Texture<Color> &texture, const std::string &filepath)
+bool save_texture(const Texture<RGBA8> &texture, const std::string &filepath)
 {
     stbi_flip_vertically_on_write(true);
     return stbi_write_png(filepath.c_str(), texture.width(), texture.height(), 4, texture.ptr(), texture.width() * 4);
@@ -16,11 +16,11 @@ bool save_texture(const Texture<Color> &texture, const std::string &filepath)
 template<>
 bool save_texture(const Texture<Depth> &texture, const std::string &filepath)
 {
-    std::vector<Color> color(texture.width() * texture.height());
+    std::vector<RGBA8> color(texture.width() * texture.height());
     for(unsigned int i = 0; i < color.size(); i++)
     {
         std::uint8_t value = 255.0f * std::clamp<float>(texture.data()[i], 0.0f, 1.0f);
-        color[i] = Color(value, value, value, 255);
+        color[i] = RGBA8(value, value, value, 255);
     }
 
     stbi_flip_vertically_on_write(true);
@@ -28,7 +28,7 @@ bool save_texture(const Texture<Depth> &texture, const std::string &filepath)
 }
 
 template<>
-bool load_texture(Texture<Color> &texture, const std::string &filepath)
+bool load_texture(Texture<RGBA8> &texture, const std::string &filepath)
 {
     int width = 0, height = 0, components = 0;
 

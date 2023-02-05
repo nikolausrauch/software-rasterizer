@@ -111,7 +111,7 @@ void loadMaterial(MaterialType& material, const tinyobj::material_t& loaded, con
 
     if constexpr(detail::has_member<MaterialType>::map_ambient::value)
     {
-        material.map_ambient = Texture<Color>(1, 1, Color(255, 255, 255, 255));
+        material.map_ambient = Texture<RGBA8>(1, 1, RGBA8(255, 255, 255, 255));
 
         if(warnings && loaded.ambient_texname.empty())
         {
@@ -128,7 +128,7 @@ void loadMaterial(MaterialType& material, const tinyobj::material_t& loaded, con
 
     if constexpr(detail::has_member<MaterialType>::map_diffuse::value)
     {
-        material.map_diffuse = Texture<Color>(1, 1, Color(255, 255, 255, 255));
+        material.map_diffuse = Texture<RGBA8>(1, 1, RGBA8(255, 255, 255, 255));
 
         if(warnings && loaded.diffuse_texname.empty())
         {
@@ -145,7 +145,7 @@ void loadMaterial(MaterialType& material, const tinyobj::material_t& loaded, con
 
     if constexpr(detail::has_member<MaterialType>::map_specular::value)
     {
-        material.map_specular = Texture<Color>(1, 1, Color(255, 255, 255, 255));
+        material.map_specular = Texture<RGBA8>(1, 1, RGBA8(255, 255, 255, 255));
 
         if(warnings && loaded.specular_texname.empty())
         {
@@ -162,7 +162,7 @@ void loadMaterial(MaterialType& material, const tinyobj::material_t& loaded, con
 
     if constexpr(detail::has_member<MaterialType>::map_specular_highlight::value)
     {
-        material.map_specular_highlight = Texture<Color>(1, 1, Color(0, 0, 0, 255));
+        material.map_specular_highlight = Texture<RGBA8>(1, 1, RGBA8(0, 0, 0, 255));
 
         if(warnings && loaded.specular_highlight_texname.empty())
         {
@@ -179,7 +179,7 @@ void loadMaterial(MaterialType& material, const tinyobj::material_t& loaded, con
 
     if constexpr(detail::has_member<MaterialType>::map_bump::value)
     {
-        material.map_bump = Texture<Color>(1, 1, Color(0, 0, 0, 255));
+        material.map_bump = Texture<RGBA8>(1, 1, RGBA8(0, 0, 0, 255));
 
         if(warnings && loaded.bump_texname.empty())
         {
@@ -196,7 +196,7 @@ void loadMaterial(MaterialType& material, const tinyobj::material_t& loaded, con
 
     if constexpr(detail::has_member<MaterialType>::map_displacement::value)
     {
-        material.map_displacement = Texture<Color>(1, 1, Color(0, 0, 0, 255));
+        material.map_displacement = Texture<RGBA8>(1, 1, RGBA8(0, 0, 0, 255));
 
         if(warnings && loaded.displacement_texname.empty())
         {

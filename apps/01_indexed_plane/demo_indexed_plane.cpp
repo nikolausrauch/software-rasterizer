@@ -33,13 +33,6 @@ struct Uniforms
 
 int main(int argc, char** argv)
 {
-    /* rasterizer with framebuffer size */
-    Renderer rasterizer(1280, 720);
-
-    /* clear framebuffer */
-    rasterizer.framebuffer().clear(Vec4(0, 0, 0, 1));
-
-
     /*========== Setup Shader Program ========*/
     Program<Vertex, Varying, Uniforms> program;
     program.onVertex([](const Uniforms& uniform, const Vertex& in, Varying& out)
@@ -68,6 +61,11 @@ int main(int argc, char** argv)
     buffer.indices = { 0, 1, 2,     2, 3, 0 };
 
 
+    /* rasterizer with framebuffer size */
+    Renderer rasterizer(1280, 720);
+
+    /* clear framebuffer */
+    rasterizer.framebuffer().clear(Vec4(0, 0, 0, 1));
 
     /* submit draw call */
     rasterizer.draw(program, buffer);

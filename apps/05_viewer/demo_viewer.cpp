@@ -7,7 +7,6 @@
 
 #include <timing.h>
 
-#include <thread>
 
 struct Vertex
 {

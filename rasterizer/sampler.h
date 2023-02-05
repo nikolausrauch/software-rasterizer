@@ -52,7 +52,7 @@ T texture(const Sampler<T>& sampler, const Vec2& uv)
 
     if(sampler.filter == eFilter::NEAREST)
     {
-        Vec2i coord(std::round(uv.x * width), std::round(uv.y * height));
+        Vec2i coord(std::floor(uv.x * width), std::floor(uv.y * height));
         coord.x = std::clamp(coord.x, 0, width);
         coord.y = std::clamp(coord.y, 0, height);
 
@@ -89,4 +89,16 @@ T texture(const Sampler<T>& sampler, const Vec2& uv)
     }
 
     return T();
+}
+
+template<typename T>
+Vec2i textureSize( const Sampler<T>& sampler )
+{
+    return Vec2i( sampler.m_texture->width(), sampler.m_texture->height() );
+}
+
+template<typename T>
+Vec2 textureInvSize( const Sampler<T>& sampler )
+{
+    return Vec2( 1.0f / sampler.m_texture->width(), 1.0f / sampler.m_texture->height() );
 }

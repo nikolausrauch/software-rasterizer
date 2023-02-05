@@ -18,7 +18,7 @@
 #include "math/rectangle.h"
 
 #include "detail/test_member.h"
-#include "detail/tuple_iter.h"
+#include "detail/tuple_helper.h"
 
 #include <cassert>
 
@@ -34,7 +34,7 @@ struct Renderer
 
     Renderer(unsigned int width, unsigned int height);
 
-    Framebuffer& framebuffer();
+    DefaultFramebuffer& framebuffer();
     Options& options();
 
 
@@ -51,8 +51,20 @@ struct Renderer
         draw(program, buffer, m_framebuffer, m_options);
     }
 
-    template<typename Vertex, typename Varying, typename Uniforms>
-    void draw(const Program<Vertex, Varying, Uniforms>& program, const struct Buffer<Vertex>& buffer, Framebuffer& fb, const Options& options)
+    template<typename Vertex, typename Varying, typename Uniforms, typename... Targets>
+    void draw(const Program<Vertex, Varying, Uniforms, Framebuffer<Targets...>>& program, const struct Buffer<Vertex>& buffer, Framebuffer<Targets...>& fb)
+    {
+        draw(program, buffer, fb, m_options);
+    }
+
+    template<typename Vertex, typename Varying, typename Uniforms, typename Indx, typename... Targets>
+    void draw(const Program<Vertex, Varying, Uniforms, Framebuffer<Targets...>>& program, const struct BufferIndexed<Vertex, Indx>& buffer, Framebuffer<Targets...>& fb)
+    {
+        draw(program, buffer, fb, m_options);
+    }
+
+    template<typename Vertex, typename Varying, typename Uniforms, typename... Targets>
+    void draw(const Program<Vertex, Varying, Uniforms, Framebuffer<Targets...>>& program, const struct Buffer<Vertex>& buffer, Framebuffer<Targets...>& fb, const Options& options)
     {
         assert(program.m_vertShader);
         assert(program.m_fragShader);
@@ -66,8 +78,8 @@ struct Renderer
         }
     }
 
-    template<typename Vertex, typename Varying, typename Uniforms, typename Indx>
-    void draw(const Program<Vertex, Varying, Uniforms>& program, const struct BufferIndexed<Vertex, Indx>& buffer, Framebuffer& fb, const Options& options)
+    template<typename Vertex, typename Varying, typename Uniforms, typename Indx, typename... Targets>
+    void draw(const Program<Vertex, Varying, Uniforms, Framebuffer<Targets...>>& program, const struct BufferIndexed<Vertex, Indx>& buffer, Framebuffer<Targets...>& fb, const Options& options)
     {
         assert(program.m_vertShader);
         assert(program.m_fragShader);
@@ -83,46 +95,42 @@ struct Renderer
 
 
 private:
-    template<typename Vertex, typename Varying, typename Uniforms>
-    void process_vertices(const std::vector<Vertex>& vertices, std::vector<Varying>& out, const Program<Vertex, Varying, Uniforms>& program, const Options& options)
+    template<typename Vertex, typename Varying, typename Uniforms, typename... Targets>
+    void process_vertices(const std::vector<Vertex>& vertices, std::vector<Varying>& out, const Program<Vertex, Varying, Uniforms, Framebuffer<Targets...>>& program, const Options& options)
     {
         for(unsigned int i = 0; i < vertices.size(); i++)
         {
             program.m_vertShader(program.m_uniforms, vertices[i], out[i]);
-
-            // perspective divide
-            out[i].position.w = 1.0f / out[i].position.w;
-            out[i].position.x *= out[i].position.w;
-            out[i].position.y *= out[i].position.w;
-            out[i].position.z *= out[i].position.w;
-
-            // screen space (viewport mapping)
-            out[i].position.x = options.viewport.min.x + (out[i].position.x + 1.0f) / 2.0f * (options.viewport.max.x - options.viewport.min.x);
-            out[i].position.y = options.viewport.min.y + (out[i].position.y + 1.0f) / 2.0f * (options.viewport.max.y - options.viewport.min.y);
+            post_process_vertices(out[i], options);
         }
     }
 
-    template<typename Vertex, typename Varying, typename Uniforms, typename Indx>
-    void process_vertices(const std::vector<Vertex>& vertices, const std::vector<Indx>& indices, std::vector<Varying>& out, const Program<Vertex, Varying, Uniforms>& program, const Options& options)
+    template<typename Vertex, typename Varying, typename Uniforms, typename Indx, typename... Targets>
+    void process_vertices(const std::vector<Vertex>& vertices, const std::vector<Indx>& indices, std::vector<Varying>& out, const Program<Vertex, Varying, Uniforms, Framebuffer<Targets...>>& program, const Options& options)
     {
         for(unsigned int i = 0; i < indices.size(); i++)
         {
             program.m_vertShader(program.m_uniforms, vertices[ indices[i] ], out[i]);
-
-            // perspective divide
-            out[i].position.w = 1.0f / out[i].position.w;
-            out[i].position.x *= out[i].position.w;
-            out[i].position.y *= out[i].position.w;
-            out[i].position.z *= out[i].position.w;
-
-            // screen space (viewport mapping)
-            out[i].position.x = options.viewport.min.x + (out[i].position.x + 1.0f) / 2.0f * (options.viewport.max.x - options.viewport.min.x);
-            out[i].position.y = options.viewport.min.y + (out[i].position.y + 1.0f) / 2.0f * (options.viewport.max.y - options.viewport.min.y);
+            post_process_vertices(out[i], options);
         }
     }
 
-    template<typename Vertex, typename Varying, typename Uniforms>
-    void draw_triangles(const std::vector<Varying>& in, const Program<Vertex, Varying, Uniforms>& program, Framebuffer& fb, const Options& options)
+    template<typename Varying>
+    void post_process_vertices(Varying& out, const Options& options)
+    {
+        // perspective divide
+        out.position.w = 1.0f / out.position.w;
+        out.position.x *= out.position.w;
+        out.position.y *= out.position.w;
+        out.position.z *= out.position.w;
+
+        // screen space (viewport mapping)
+        out.position.x = options.viewport.min.x + (out.position.x + 1.0f) / 2.0f * (options.viewport.max.x - options.viewport.min.x);
+        out.position.y = options.viewport.min.y + (out.position.y + 1.0f) / 2.0f * (options.viewport.max.y - options.viewport.min.y);
+    }
+
+    template<typename Vertex, typename Varying, typename Uniforms, typename... Targets>
+    void draw_triangles(const std::vector<Varying>& in, const Program<Vertex, Varying, Uniforms, Framebuffer<Targets...>>& program, Framebuffer<Targets...>& fb, const Options& options)
     {
         for(unsigned int i = 0; i < in.size() / 3; i++)
         {
@@ -130,8 +138,8 @@ private:
         }
     }
 
-    template<typename Vertex, typename Varying, typename Uniforms>
-    void draw_triangle(const Varying& v_0, const Varying& v_1, const Varying& v_2, const Program<Vertex, Varying, Uniforms>& program, Framebuffer& fb, const Options& options)
+    template<typename Vertex, typename Varying, typename Uniforms, typename... Targets>
+    void draw_triangle(const Varying& v_0, const Varying& v_1, const Varying& v_2, const Program<Vertex, Varying, Uniforms, Framebuffer<Targets...>>& program, Framebuffer<Targets...>& fb, const Options& options)
     {
         if(options.culling)
         {
@@ -150,33 +158,44 @@ private:
                 auto bc = barycentric(Vec2(v_0.position), Vec2(v_1.position), Vec2(v_2.position), fragCoord);
                 if(bc.x < 0 || bc.y < 0 || bc.z < 0 || std::isnan(bc.x)) continue;
 
-                // linear interpolate in screen space
+                /* linear interpolate in screen space */
                 float w = bc.x * v_0.position.w + bc.y * v_1.position.w + bc.z * v_2.position.w;
                 float z = bc.x * v_0.position.z + bc.y * v_1.position.z + bc.z * v_2.position.z;
                 z = z * 0.5f + 0.5f;
 
-                // TODO: clipping should happen earlier
+                /* TODO: clipping should happen earlier */
                 if(0.0f > z || z > 1.0f) continue;
 
-                // early depth test
-                auto& depth = m_framebuffer.depth()(x, y);
-                if(z > depth) continue;
-                depth = z;
+                /* early depth test */
+                if constexpr (Framebuffer<Targets...>::has_depth)
+                {
+                    auto& depth = fb.depth()(x, y);
+                    if(z > depth) continue;
+                    depth = z;
+                }
 
-                // perspective correction of barycentric coordinates
+                /* perspective correction of barycentric coordinates */
                 bc.x = 1.0f / w * bc.x * v_0.position.w;
                 bc.y = 1.0f / w * bc.y * v_1.position.w;
                 bc.z = 1.0f / w * bc.z * v_2.position.w;
 
-                // interpolate fragment data
+                /* interpolate fragment data */
                 Varying inter;
                 interpolate_frag_data(bc, v_0, v_1, v_2, inter);
 
-                // call fragment shader
-                Vec4 fragColor(0, 0, 0, 0);
-                program.m_fragShader(program.m_uniforms, inter, fragColor);
+                /* call fragment shader, TODO: unecessary complicated to have two different function definitions? */
+                if constexpr (std::is_same_v<Framebuffer<Targets...>, DefaultFramebuffer>)
+                {
+                    Vec4 fragColor(0, 0, 0, 0);
+                    program.m_fragShader(program.m_uniforms, inter, fragColor);
 
-                fb.color()(x, y) = Color( max( min(fragColor, 1.0), 0.0) * 255);
+                    fb.color()(x, y) = RGBA8( max( min(fragColor, 1.0), 0.0) * 255);
+                }
+                else
+                {
+                    auto targets = fb.targets(x, y);
+                    program.m_fragShader(program.m_uniforms, inter, targets);
+                }
             }
         }
     }
@@ -191,10 +210,10 @@ private:
             res = bc.x * x0 + bc.y * x1 + bc.z * x2;
         };
 
-        detail::iter_tuple(interpolate, v_0._reflect, v_1._reflect, v_2._reflect, result._reflect);
+        detail::tuple_iter(interpolate, v_0._reflect, v_1._reflect, v_2._reflect, result._reflect);
     }
 
 private:
-    Framebuffer m_framebuffer;
+    DefaultFramebuffer m_framebuffer;
     Options m_options;
 };
