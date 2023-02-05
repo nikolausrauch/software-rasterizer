@@ -31,7 +31,7 @@ A software-rasterizer in C++, that I wrote to get a basic understanding of the O
   - [x] Blinn-Phong illumination
   - [ ] Cel Shading
   - [x] Normal Mapping
-  - [ ] Shadow Mapping
+  - [x] Shadow Mapping
   - [ ] Screen Space Ambient Occlusion
   - [ ] Physically-based rendering     
 
@@ -125,6 +125,10 @@ Blinn-Phong Illumination (Phong Shading)
 Normal Mapping ("Cartridge" [Link](https://sketchfab.com/3d-models/gameboy-cartridge-7c0160c8097a43e0a5e146bf4d7e01a1) by Karolina D)
 
 ![alt](img/example_normal_mapping.png)
+
+Shadow Mapping (based on "low poly house" [Link](https://sketchfab.com/3d-models/low-poly-house-02635c7c191848699e88085c2ab27538) by [cofitelle](https://sketchfab.com/cofitelle) licensed under CC-BY-4.0 [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/))
+
+![alt](img/example_shadow_mapping.png)
 
 ## :books: Useful Resources
 [Tiny Renderer](https://github.com/ssloy/tinyrenderer/wiki/Lesson-0:-getting-started)

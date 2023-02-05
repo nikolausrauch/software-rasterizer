@@ -6,6 +6,7 @@
 #include <iostream>
 
 template<typename T> struct Vector4;
+template<typename T> struct Vector3;
 
 template<typename T>
 struct Vector2
@@ -19,6 +20,12 @@ struct Vector2
     }
 
     Vector2(const Vector4<T>& a)
+        : x(a.x), y(a.y)
+    {
+
+    }
+
+    Vector2(const Vector3<T>& a)
         : x(a.x), y(a.y)
     {
 
