@@ -29,6 +29,7 @@ struct Renderer
     {
         Rectf viewport;
         bool culling;
+        bool wireframe;
     };
 
 
@@ -74,7 +75,10 @@ struct Renderer
 
         switch(buffer.primitive)
         {
-        case ePrimitive::TRIANGLES: draw_triangles(pipeline_data, program, fb, options);
+        case ePrimitive::TRIANGLES: options.wireframe ? draw_triangles_wireframe(pipeline_data, program, fb, options)
+                                                      : draw_triangles(pipeline_data, program, fb, options);
+            break;
+        case ePrimitive::LINES: draw_lines(pipeline_data, program, fb, options);
         }
     }
 
@@ -89,7 +93,10 @@ struct Renderer
 
         switch(buffer.primitive)
         {
-        case ePrimitive::TRIANGLES: draw_triangles(pipeline_data, program, fb, options);
+        case ePrimitive::TRIANGLES: options.wireframe ? draw_triangles_wireframe(pipeline_data, program, fb, options)
+                                                      : draw_triangles(pipeline_data, program, fb, options);
+            break;
+        case ePrimitive::LINES: draw_lines(pipeline_data, program, fb, options);
         }
     }
 
@@ -137,6 +144,18 @@ private:
             draw_triangle(in[i*3 + 0], in[i*3 + 1], in[i*3 + 2], program, fb, options);
         }
     }
+
+    template<typename Vertex, typename Varying, typename Uniforms, typename... Targets>
+    void draw_triangles_wireframe(const std::vector<Varying>& in, const Program<Vertex, Varying, Uniforms, Framebuffer<Targets...>>& program, Framebuffer<Targets...>& fb, const Options& options)
+    {
+        for(unsigned int i = 0; i < in.size() / 3; i++)
+        {
+            draw_line(in[i*3 + 0], in[i*3 + 1], program, fb, options);
+            draw_line(in[i*3 + 1], in[i*3 + 2], program, fb, options);
+            draw_line(in[i*3 + 2], in[i*3 + 0], program, fb, options);
+        }
+    }
+
 
     template<typename Vertex, typename Varying, typename Uniforms, typename... Targets>
     void draw_triangle(const Varying& v_0, const Varying& v_1, const Varying& v_2, const Program<Vertex, Varying, Uniforms, Framebuffer<Targets...>>& program, Framebuffer<Targets...>& fb, const Options& options)
@@ -189,13 +208,89 @@ private:
                     Vec4 fragColor(0, 0, 0, 0);
                     program.m_fragShader(program.m_uniforms, inter, fragColor);
 
-                    fb.color()(x, y) = RGBA8( max( min(fragColor, 1.0), 0.0) * 255);
+                    fb.color()(x, y) = RGBA8( max( min(fragColor, 1.0), 0.0) * 255 );
                 }
                 else
                 {
                     auto targets = fb.targets(x, y);
                     program.m_fragShader(program.m_uniforms, inter, targets);
                 }
+            }
+        }
+    }
+
+    template<typename Vertex, typename Varying, typename Uniforms, typename... Targets>
+    void draw_lines(const std::vector<Varying>& in, const Program<Vertex, Varying, Uniforms, Framebuffer<Targets...>>& program, Framebuffer<Targets...>& fb, const Options& options)
+    {
+        for(unsigned int i = 0; i < in.size() / 2; i++)
+        {
+            draw_line(in[i*2 + 0], in[i*2 + 1], program, fb, options);
+        }
+    }
+
+    template<typename Vertex, typename Varying, typename Uniforms, typename... Targets>
+    void draw_line(const Varying& v_0, const Varying& v_1, const Program<Vertex, Varying, Uniforms, Framebuffer<Targets...>>& program, Framebuffer<Targets...>& fb, const Options& options)
+    {
+        /* clamp to viewport */
+        auto v0 = clamp(options.viewport, Vec2(v_0.position), 0.0f, -1.0f);
+        auto v1 = clamp(options.viewport, Vec2(v_1.position), 0.0f, -1.0f);
+
+        /* rasterize line and iterate fragments */
+        Vec2i r0 = v0;
+        Vec2i r1 = v1;
+
+        Vec2i step( r0.x < r1.x ? 1 : -1, r0.y < r1.y ? 1 : -1 );
+        Vec2i delta( std::abs(r1.x - r0.x), -std::abs(r1.y - r0.y) );
+        int err = delta.x + delta.y;
+        int err2 = 2 * err;
+
+        for(;r0 != r1; err2 = 2 * err)
+        {
+            Vec2i pixelCoord = r0;
+
+            /* step to next fragment position */
+            if(err2 > delta.y) { err += delta.y; r0.x += step.x; }
+            if(err2 < delta.x) { err += delta.x; r0.y += step.y; }
+
+            /* linear interpolate in screen space */
+            Vec2 fragCoord = Vec2(pixelCoord.x + 0.5f, pixelCoord.y + 0.5f);
+            auto ic = linear(Vec2(v_0.position), Vec2(v_1.position), fragCoord);
+
+            float w = ic.x * v_0.position.w + ic.y * v_1.position.w;
+            float z = ic.x * v_0.position.z + ic.y * v_1.position.z;
+            z = z * 0.5f + 0.5f;
+
+            /* TODO: clipping should happen earlier */
+            if(0.0f > z || z > 1.0f) continue;
+
+            /* early depth test */
+            if constexpr (Framebuffer<Targets...>::has_depth)
+            {
+                auto& depth = fb.depth()(pixelCoord.x, pixelCoord.y);
+                if(z > depth) continue;
+                depth = z;
+            }
+
+            /* perspective correction of linear coordinates */
+            ic.x = 1.0f / w * ic.x * v_0.position.w;
+            ic.y = 1.0f / w * ic.y * v_1.position.w;
+
+            /* interpolate fragment data */
+            Varying inter;
+            interpolate_frag_data(ic, v_0, v_1, inter);
+
+            /* call fragment shader, TODO: unecessary complicated to have two different function definitions? */
+            if constexpr (std::is_same_v<Framebuffer<Targets...>, DefaultFramebuffer>)
+            {
+                Vec4 fragColor(0, 0, 0, 0);
+                program.m_fragShader(program.m_uniforms, inter, fragColor);
+
+                fb.color()(pixelCoord.x, pixelCoord.y) = RGBA8( max( min(fragColor, 1.0), 0.0) * 255 );
+            }
+            else
+            {
+                auto targets = fb.targets(pixelCoord.x, pixelCoord.y);
+                program.m_fragShader(program.m_uniforms, inter, targets);
             }
         }
     }
@@ -211,6 +306,17 @@ private:
         };
 
         detail::tuple_iter(interpolate, v_0._reflect, v_1._reflect, v_2._reflect, result._reflect);
+    }
+
+    template<typename Varying>
+    void interpolate_frag_data(const Vec2& ic, const Varying& v_0, const Varying& v_1, Varying& result)
+    {
+        auto interpolate = [ic](const auto& x0, const auto& x1, auto& res)
+        {
+            res = ic.x * x0 + ic.y * x1;
+        };
+
+        detail::tuple_iter(interpolate, v_0._reflect, v_1._reflect, result._reflect);
     }
 
 private:

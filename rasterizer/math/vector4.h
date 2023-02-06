@@ -134,6 +134,31 @@ auto operator /(U s, const Vector4<T> &v)
     return Vector4<decltype(T() / U())>(s / v.x, s / v.y, s / v.z, s / v.w);
 }
 
+template<typename T>
+auto operator ==(const Vector4<T>& a, const Vector4<T>& b)
+{
+    return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w;
+}
+
+template<typename T>
+auto operator !=(const Vector4<T>& a, const Vector4<T>& b)
+{
+    return a.x != b.x && a.y != b.y && a.z != b.z && a.w != b.w;
+}
+
+template<typename T>
+auto abs(const Vector4<T>& v)
+{
+    return Vector4<T>{ std::abs(v.x), std::abs(v.y), std::abs(v.z), std::abs(v.w) };
+}
+
+template<typename T>
+auto clamp(const Vector4<T>& v, const Vector4<T>& min, const Vector4<T>& max)
+{
+    return Vector4<T>{ std::clamp<T>(v.x, min.x, max.x), std::clamp<T>(v.y, min.y, max.y), std::clamp<T>(v.z, min.z, max.z), std::clamp<T>(v.w, min.w, max.w)   };
+}
+
+
 template<typename T, typename U>
 auto min(const Vector4<T> &v, U s)
 {

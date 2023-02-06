@@ -17,11 +17,13 @@ l.t.r. ["Sad toaster"](https://skfb.ly/on9Dn) by tasha.lime, ["Coatlicue"](https
 - Rasterizer
   - [x] perspective-correct attribute interpolation
   - [x] z-buffering
-  - [x] texture mapping with sampler specific filter (nearest, linear)
+  - [x] texture sampler with filter (nearest, linear)
   - [x] face culling
   - [x] custom framebuffer
-  - [ ] line rendering
-  - [ ] wireframe rendering
+  - [x] line rendering
+  - [x] wireframe rendering
+  - [ ] mip mapping
+  - [ ] anisotropic filtering
   - [ ] cubemap
 - Examples
   - [x] minimal examples

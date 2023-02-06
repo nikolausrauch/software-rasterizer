@@ -71,5 +71,11 @@ struct Rectangle
     }
 };
 
+template<typename T>
+Vector2<T> clamp(const Rectangle<T>& border, const Vector2<T>& point, T pad_min = 0, T pad_max = 0)
+{
+    return { std::clamp<T>(point.x, border.min.x + pad_min, border.max.x + pad_max), std::clamp<T>(point.y, border.min.y + pad_min, border.max.y + pad_max) };
+}
+
 typedef Rectangle<int> Recti;
 typedef Rectangle<float> Rectf;

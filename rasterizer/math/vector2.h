@@ -2,6 +2,7 @@
 
 #include "base.h"
 
+#include <algorithm>
 #include <cassert>
 #include <iostream>
 
@@ -133,6 +134,18 @@ auto operator /(U s, const Vector2<T>& v)
 }
 
 template<typename T>
+auto operator ==(const Vector2<T>& a, const Vector2<T>& b)
+{
+    return a.x == b.x && a.y == b.y;
+}
+
+template<typename T>
+auto operator !=(const Vector2<T>& a, const Vector2<T>& b)
+{
+    return a.x != b.x || a.y != b.y;
+}
+
+template<typename T>
 float length(const Vector2<T>& v)
 {
     return std::sqrt( v.x*v.x + v.y*v.y );
@@ -145,10 +158,22 @@ Vector2<float> normalize(const Vector2<T>& v)
     return v / length(v);
 }
 
+template<typename T>
+auto abs(const Vector2<T>& v)
+{
+    return Vector2<T>{ std::abs(v.x), std::abs(v.y) };
+}
+
 template<typename T, typename U>
 auto dot(const Vector2<T>& a, const Vector2<U>& b)
 {
     return a.x * b.x + a.y + b.y;
+}
+
+template<typename T>
+auto clamp(const Vector2<T>& v, const Vector2<T>& min, const Vector2<T>& max)
+{
+    return Vector2<T>{ std::clamp<T>(v.x, min.x, max.x), std::clamp<T>(v.y, min.y, max.y)  };
 }
 
 template<typename T, typename U>
@@ -162,6 +187,20 @@ auto reflect(const Vector2<T>& I, const Vector2<U>& N)
 {
     return I - 2.0f * dot(I, N) * N;
 }
+
+template<typename T>
+Vector2<float> linear(const Vector2<T>& a, const Vector2<T>& b, const Vector2<T>& p)
+{
+    auto dir = b - a;
+    auto ap = p - a;
+    auto dir_ap = dot(normalize(dir), ap);
+
+    float l = length(dir);
+    float frac = std::clamp<float>(dir_ap / l, 0.0f, 1.0f);
+
+    return { frac, 1.0f - frac };
+}
+
 
 typedef Vector2<int> Vec2i;
 typedef Vector2<float> Vec2;

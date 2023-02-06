@@ -140,6 +140,18 @@ auto operator /(U s, const Vector3<T>& v)
 }
 
 template<typename T>
+auto operator ==(const Vector3<T>& a, const Vector3<T>& b)
+{
+    return a.x == b.x && a.y == b.y && a.z == b.z;
+}
+
+template<typename T>
+auto operator !=(const Vector3<T>& a, const Vector3<T>& b)
+{
+    return a.x != b.x && a.y != b.y && a.z != b.z;
+}
+
+template<typename T>
 float length(const Vector3<T>& v)
 {
     return std::sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
@@ -150,6 +162,18 @@ Vector3<float> normalize(const Vector3<T>& v)
 {
     assert(length(v) != 0.0f);
     return v / length(v);
+}
+
+template<typename T>
+auto abs(const Vector3<T>& v)
+{
+    return Vector3<T>{ std::abs(v.x), std::abs(v.y), std::abs(v.z) };
+}
+
+template<typename T>
+auto clamp(const Vector3<T>& v, const Vector3<T>& min, const Vector3<T>& max)
+{
+    return Vector3<T>{ std::clamp<T>(v.x, min.x, max.x), std::clamp<T>(v.y, min.y, max.y), std::clamp<T>(v.z, min.z, max.z)  };
 }
 
 template<typename T, typename U>

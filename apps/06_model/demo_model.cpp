@@ -82,7 +82,6 @@ int main(int argc, char** argv)
     uniforms.material.diffuse = mesh.materialGroups().front().material.map_diffuse;
     uniforms.material.diffuse.filter = eFilter::NEAREST;
 
-
     /*========== OpenGL/GLFW Viewer ========*/
     Window window("Software-Rasterizer Model", 1280, 720);
 
@@ -97,6 +96,15 @@ int main(int argc, char** argv)
         TIME_MS(rasterizer.draw(program, buffer));
 
         window.swap(rasterizer.framebuffer());
+    });
+
+
+    window.onKeyboard([&](Window &window, int key, int mod, bool press)
+    {
+        if(key == GLFW_KEY_W && press)
+        {
+            rasterizer.options().wireframe = !rasterizer.options().wireframe;
+        }
     });
 
     window.run();

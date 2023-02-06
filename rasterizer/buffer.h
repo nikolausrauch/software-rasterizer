@@ -4,7 +4,8 @@
 
 enum class ePrimitive
 {
-    TRIANGLES
+    TRIANGLES,
+    LINES
 };
 
 template <typename Vert>
