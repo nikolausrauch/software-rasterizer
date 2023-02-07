@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <algorithm>
 #include <cstddef>
 #include <tuple>
