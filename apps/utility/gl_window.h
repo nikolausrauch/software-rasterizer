@@ -18,6 +18,7 @@ struct Window
 
 
     Window(const std::string &title, unsigned int width, unsigned int height);
+    Window(const std::string &title, unsigned int width, unsigned int height, unsigned int fb_width, unsigned int fb_height);
     ~Window();
 
     void onKeyboard(const KeyboardCallback& cb);

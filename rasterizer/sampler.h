@@ -73,7 +73,7 @@ T texture(const Sampler<T>& sampler, const Vec2& uv)
 
     if(sampler.filter == eFilter::NEAREST)
     {
-        Vec2i coord(std::floor(proj_uv.x * (width - 1) ), std::floor(proj_uv.y * (height - 1)) );
+        Vec2i coord(std::round(proj_uv.x * width - 0.5f), std::round(proj_uv.y * height - 0.5f) );
         coord.x = std::clamp(coord.x, 0, width - 1);
         coord.y = std::clamp(coord.y, 0, height - 1);
 
@@ -82,10 +82,12 @@ T texture(const Sampler<T>& sampler, const Vec2& uv)
     else if(sampler.filter == eFilter::LINEAR)
     {
         /* TODO: apply wrapping for interpolation coords  */
+        Vec2 coord = Vec2(proj_uv.x * width - 0.5f, proj_uv.y * height - 0.5f);
+        Vec2 lower(int(coord.x), int(coord.y));
+        Vec2 upper(lower.x + 1, lower.y + 1);
 
-        Vec2 coord = Vec2(proj_uv.x * (width - 1), proj_uv.y * (height - 1));
-        Vec2 upper(std::ceil(coord.x), std::ceil(coord.y));
-        Vec2 lower(std::floor(coord.x), std::floor(coord.y));
+        upper.x = std::clamp<float>(upper.x, 0, width - 1);
+        upper.y = std::clamp<float>(upper.y, 0, height - 1);
 
         coord = coord - lower;
 
@@ -94,10 +96,10 @@ T texture(const Sampler<T>& sampler, const Vec2& uv)
         auto color_01 = (*sampler.m_texture)(lower.x, upper.y);
         auto color_11 = (*sampler.m_texture)(upper.x, upper.y);
 
-        auto color_0 = color_00 * coord.x + color_10 * (1.0f - coord.x);
-        auto color_1 = color_01 * coord.x + color_11 * (1.0f - coord.x);
+        auto color_0 = color_00 * (1.0f - coord.x) + color_10 * coord.x;
+        auto color_1 = color_01 * (1.0f - coord.x) + color_11 * coord.x;
 
-        return color_0 * coord.y + color_1 * (1.0f - coord.y);
+        return color_0 * (1.0f - coord.y) + color_1 * coord.y;
     }
 
     return T();

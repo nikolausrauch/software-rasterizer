@@ -78,6 +78,12 @@ void window_mouse_button(GLFWwindow* handle, int button, int action, int mods)
 }
 
 Window::Window(const std::string& title, unsigned int width, unsigned int height)
+    : Window(title, width, height, width, height)
+{
+
+}
+
+Window::Window(const std::string &title, unsigned int width, unsigned int height, unsigned int fb_width, unsigned int fb_height)
     : m_program(0), m_quad_vao(0), m_quad_vbo(0), m_texture(0), m_fps_counter({ 0, 0, 0 })
 {
     /*-------------- init glfw ----------------*/
@@ -128,7 +134,7 @@ Window::Window(const std::string& title, unsigned int width, unsigned int height
 
     /*-------------- init opengl stuff ----------------*/
     m_program = shaderCreate(vertex_shader_code, fragment_shader_code);
-    m_texture = textureCreate(width, height);
+    m_texture = textureCreate(fb_width, fb_height);
     std::tie(m_quad_vao, m_quad_vbo) = meshCreate(
                 {
                     {{-1.0, -1.0, 0.0}, {0.0, 0.0}},

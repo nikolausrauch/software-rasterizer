@@ -80,7 +80,7 @@ int main(int argc, char** argv)
     uniforms.proj = Mat4::perspective(radians(45.0f), 1280.0f/720.0f, 1.0, 7.0);
     uniforms.view = Mat4::translation(-Vec3{0, 0.0, 3.5});
     uniforms.material.diffuse = mesh.materialGroups().front().material.map_diffuse;
-    uniforms.material.diffuse.filter = eFilter::NEAREST;
+    uniforms.material.diffuse.filter = eFilter::LINEAR;
 
     /*========== OpenGL/GLFW Viewer ========*/
     Window window("Software-Rasterizer Model", 1280, 720);
