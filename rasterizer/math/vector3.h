@@ -87,7 +87,7 @@ struct Vector3
 
     friend std::ostream& operator<<(std::ostream& os, const Vector3<T>& vec)
     {
-        return os << "{" << vec.x << ", " << vec.y << ", " << vec.z << "}";
+        return os << "{" << +vec.x << ", " << +vec.y << ", " << +vec.z << "}";
     }
 };
 

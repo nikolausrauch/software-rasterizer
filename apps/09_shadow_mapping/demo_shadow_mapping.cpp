@@ -82,7 +82,7 @@ int main(int argc, char** argv)
     Renderer::Options options_shadow{ {0, 0,
                     static_cast<float>(framebuffer_shadow.depth().width()),
                     static_cast<float>(framebuffer_shadow.depth().height())},
-                                      true };
+                                      true, false };
 
     /*========== Setup Shader Program (1. render pass - shadow mapp) ========*/
     Program<Vertex, Varying, Uniforms, Framebuffer<Depth>> program_shadow;

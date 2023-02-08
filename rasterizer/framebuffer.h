@@ -38,7 +38,7 @@ struct Framebuffer
 
     TargetFragments targets(int x, int y)
     {
-        return std::apply([x, y](auto&... ts) -> auto& { return (ts(x,y), ...); }, m_targets);
+        return detail::tuple_construct([x, y](auto& ts) -> auto& { return ts(x,y); }, m_targets);
     }
 
     template<typename T = Texture<RGBA8>, typename = HasTarget<T>> Texture<RGBA8>& color()

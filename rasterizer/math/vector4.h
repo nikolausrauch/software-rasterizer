@@ -88,7 +88,7 @@ struct Vector4
 private:
     friend std::ostream& operator<< (std::ostream& os, const Vector4<T>& vec)
     {
-        return os << "{" << vec.x << ", " << vec.y << ", " << vec.z << ", " << vec.w <<  "}";
+        return os << "{" << +vec.x << ", " << +vec.y << ", " << +vec.z << ", " << +vec.w <<  "}";
     }
 };
 

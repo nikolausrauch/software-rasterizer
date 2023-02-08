@@ -72,4 +72,18 @@ struct tuple_index<T, std::tuple<Ts...>>
     }();
 };
 
+
+template <typename T, typename Func, std::size_t... Is>
+auto tuple_construct(const Func& func, T& t, std::index_sequence<Is...>)
+{
+    return std::forward_as_tuple( func(std::get<Is>(t))... );
+}
+
+template <typename T, typename Func, std::size_t Size = std::tuple_size_v<T>>
+auto tuple_construct(const Func& func, T& value)
+{
+    return tuple_construct(func, value, std::make_index_sequence<Size>{});
+}
+
+
 }

@@ -86,7 +86,7 @@ struct Vector2
 
     friend std::ostream& operator<<(std::ostream& os, const Vector2<T>& vec)
     {
-        return os << "{" << vec.x << ", " << vec.y <<  "}";
+        return os << "{" << +vec.x << ", " << +vec.y <<  "}";
     }
 };
 
