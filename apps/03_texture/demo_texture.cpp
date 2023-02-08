@@ -47,12 +47,24 @@ int main(int argc, char** argv)
                         { { 0.5, -0.5, 0.5}, {1.0, 0.0} },
                         { { 0.0,  0.5, 0.5}, {0.5, 1.0} } };
 
+    /* screen quad */
+    Buffer<Vertex> buffer_quad;
+    buffer_quad.primitive = ePrimitive::TRIANGLES;
+    buffer_quad.vertices =  { { {-1.0, -1.0, 0.0}, {-1.0, -1.0} },
+                              { { 1.0, -1.0, 0.0}, { 2.0, -1.0} },
+                              { { 1.0,  1.0, 0.0}, { 2.0,  2.0} },
+
+                              { {-1.0, -1.0, 0.0}, {-1.0, -1.0} },
+                              { { 1.0,  1.0, 0.0}, { 2.0,  2.0} },
+                              { {-1.0,  1.0, 0.0}, {-1.0,  2.0} } };
+
 
     /*========== Load Texture and set uniform ========*/
     Texture<RGBA8> texture;
     texture.load("assets/grid.png");
     program.uniforms().texture = texture;
     program.uniforms().texture.filter = eFilter::NEAREST;
+    program.uniforms().texture.wrap = eWrap::CLAMP_EDGE;
 
 
     Renderer rasterizer(480, 480);
@@ -60,7 +72,7 @@ int main(int argc, char** argv)
     rasterizer.framebuffer().clear(Vec4(0.2, 0.2, 0.2, 1));
 
     /* submit draw call */
-    rasterizer.draw(program, buffer);
+    rasterizer.draw(program, buffer_quad);
 
     /* save framebuffer as .png */
     rasterizer.framebuffer().color().save("03_texture.png");
