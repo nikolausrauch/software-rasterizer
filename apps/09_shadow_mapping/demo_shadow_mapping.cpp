@@ -78,7 +78,7 @@ int main(int argc, char** argv)
 {
     Renderer rasterizer(1280, 720);
 
-    Framebuffer<Depth> framebuffer_shadow(1028, 1028);
+    Framebuffer<Depth> framebuffer_shadow(512, 512);
     Renderer::Options options_shadow{ {0, 0,
                     static_cast<float>(framebuffer_shadow.depth().width()),
                     static_cast<float>(framebuffer_shadow.depth().height())},
@@ -104,7 +104,7 @@ int main(int argc, char** argv)
         auto word_pos = uniform.model * Vec4(in.position, 1.0f);
         out.position = uniform.proj * uniform.view * word_pos;
         out.world_position = Vec3(word_pos);
-        out.normal = in.normal;
+        out.normal = Mat3(uniform.model) * in.normal;
         out.uv = in.texcoord;
         out.lighspace_position = uniform.lightSpace * word_pos;
     });
@@ -172,7 +172,7 @@ int main(int argc, char** argv)
 
 
     /*========== OpenGL/GLFW Viewer ========*/
-    Window window("Software-Rasterizer Blinn Phong", 1280, 720);
+    Window window("Software-Rasterizer Shadow Mapping", 1280, 720);
 
     window.onDraw([&](Window& window, float dt)
     {

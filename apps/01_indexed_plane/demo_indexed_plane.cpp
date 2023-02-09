@@ -13,8 +13,7 @@ struct Vertex
 /*
  * Output of vertex stage, Input to fragment stage
  * -> position is mandatory
- * -> automatically interpolated members (position, color, normal, uv)
- * TODO: add interpolation rules for unknown data
+ * -> members to interpolate are declared by VARYING and VAL Macros (member need scalar multiplication, and addition)
 */
 struct Varying
 {
@@ -48,8 +47,8 @@ int main(int argc, char** argv)
 
     /* set uniforms */
     auto& uniforms = program.uniforms();
-    uniforms.proj = Mat4::perspective(radians(45.0f), 1280.0f/720.0f, 1.0, 7.0);
-    uniforms.view = Mat4::translation(-Vec3{0, 0.25, 3.5}) * Mat4::rotationX(radians(10.0f));
+    uniforms.proj = Mat4::perspective(radians(45.0f), 1280.0f/720.0f, 1.0f, 7.0f);
+    uniforms.view = Mat4::translation(-Vec3{0.0f, 0.25f, 3.5f}) * Mat4::rotationX(radians(10.0f));
 
     /*========== Setup Buffer Data ========*/
     BufferIndexed<Vertex, unsigned int> buffer;

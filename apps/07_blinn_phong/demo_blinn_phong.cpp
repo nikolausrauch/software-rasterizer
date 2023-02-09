@@ -81,7 +81,7 @@ int main(int argc, char** argv)
         auto word_pos = uniform.model * Vec4(in.position, 1.0f);
         out.position = uniform.proj * uniform.view * word_pos;
         out.world_position = Vec3(word_pos);
-        out.normal = in.normal;
+        out.normal = Mat3(uniform.model) * in.normal;
         out.uv = in.texcoord;
     });
 

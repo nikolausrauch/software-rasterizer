@@ -173,7 +173,7 @@ int main(int argc, char** argv)
 
 
     /*========== OpenGL/GLFW Viewer ========*/
-    Window window("Software-Rasterizer Blinn Phong", 1280, 720);
+    Window window("Software-Rasterizer Normal Mapping", 1280, 720);
 
     window.onDraw([&](Window& window, float dt)
     {

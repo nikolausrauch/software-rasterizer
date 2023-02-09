@@ -4,11 +4,9 @@
 
 #include <algorithm>
 
-template<typename T>
-struct Sampler;
+template<typename T> struct Sampler;
+template<typename T> T texture(const Sampler<T>& sampler, const Vec2& uv);
 
-template<typename T>
-T texture(const Sampler<T>& sampler, const Vec2& uv);
 
 enum class eFilter
 {
@@ -21,6 +19,7 @@ enum class eWrap
     REPEAT,
     CLAMP_EDGE
 };
+
 
 template<typename T>
 struct Sampler
@@ -48,6 +47,7 @@ public:
 
     friend T texture<>(const Sampler<T>& sampler, const Vec2& uv);
 };
+
 
 template<typename T>
 T texture(const Sampler<T>& sampler, const Vec2& uv)

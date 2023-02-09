@@ -1,12 +1,3 @@
-/**
- * TODO:
- * - shadow mapping
- * - discarding of primitives and fragments (clipping, culling)
- * - wireframe rendering of triangles
- * - linear interpolation for lines
- * - cleanup math functions (fix ambiguity)
- */
-
 #pragma once
 
 #include "buffer.h"
@@ -79,6 +70,8 @@ struct Renderer
                                                       : draw_triangles(pipeline_data, program, fb, options);
             break;
         case ePrimitive::LINES: draw_lines(pipeline_data, program, fb, options);
+            break;
+        default: break;
         }
     }
 
@@ -88,15 +81,17 @@ struct Renderer
         assert(program.m_vertShader);
         assert(program.m_fragShader);
 
-        std::vector<Varying> pipeline_data(buffer.indices.size());
-        process_vertices(buffer.vertices, buffer.indices, pipeline_data, program, options);
+        std::vector<Varying> pipeline_data(buffer.vertices.size());
+        process_vertices(buffer.vertices, pipeline_data, program, options);
 
         switch(buffer.primitive)
         {
-        case ePrimitive::TRIANGLES: options.wireframe ? draw_triangles_wireframe(pipeline_data, program, fb, options)
-                                                      : draw_triangles(pipeline_data, program, fb, options);
+        case ePrimitive::TRIANGLES: options.wireframe ? draw_triangles_wireframe(pipeline_data, buffer.indices, program, fb, options)
+                                                      : draw_triangles(pipeline_data, buffer.indices, program, fb, options);
             break;
-        case ePrimitive::LINES: draw_lines(pipeline_data, program, fb, options);
+        case ePrimitive::LINES: draw_lines(pipeline_data, buffer.indices, program, fb, options);
+            break;
+        default: break;
         }
     }
 
@@ -108,16 +103,6 @@ private:
         for(unsigned int i = 0; i < vertices.size(); i++)
         {
             program.m_vertShader(program.m_uniforms, vertices[i], out[i]);
-            post_process_vertices(out[i], options);
-        }
-    }
-
-    template<typename Vertex, typename Varying, typename Uniforms, typename Indx, typename... Targets>
-    void process_vertices(const std::vector<Vertex>& vertices, const std::vector<Indx>& indices, std::vector<Varying>& out, const Program<Vertex, Varying, Uniforms, Framebuffer<Targets...>>& program, const Options& options)
-    {
-        for(unsigned int i = 0; i < indices.size(); i++)
-        {
-            program.m_vertShader(program.m_uniforms, vertices[ indices[i] ], out[i]);
             post_process_vertices(out[i], options);
         }
     }
@@ -145,7 +130,7 @@ private:
         }
     }
 
-    template<typename Vertex, typename Varying, typename Uniforms, typename... Targets>
+    template<typename Vertex, typename Varying, typename Uniforms,  typename... Targets>
     void draw_triangles_wireframe(const std::vector<Varying>& in, const Program<Vertex, Varying, Uniforms, Framebuffer<Targets...>>& program, Framebuffer<Targets...>& fb, const Options& options)
     {
         for(unsigned int i = 0; i < in.size() / 3; i++)
@@ -156,6 +141,25 @@ private:
         }
     }
 
+    template<typename Vertex, typename Varying, typename Uniforms, typename Indx,  typename... Targets>
+    void draw_triangles(const std::vector<Varying>& in, const std::vector<Indx>& indices, const Program<Vertex, Varying, Uniforms, Framebuffer<Targets...>>& program, Framebuffer<Targets...>& fb, const Options& options)
+    {
+        for(unsigned int i = 0; i < indices.size() / 3; i++)
+        {
+            draw_triangle(in[ indices[i*3 + 0] ], in[ indices[i*3 + 1] ], in[ indices[i*3 + 2] ], program, fb, options);
+        }
+    }
+
+    template<typename Vertex, typename Varying, typename Uniforms, typename Indx,  typename... Targets>
+    void draw_triangles_wireframe(const std::vector<Varying>& in, const std::vector<Indx>& indices, const Program<Vertex, Varying, Uniforms, Framebuffer<Targets...>>& program, Framebuffer<Targets...>& fb, const Options& options)
+    {
+        for(unsigned int i = 0; i < indices.size() / 3; i++)
+        {
+            draw_line(in[ indices[i*3 + 0] ], in[ indices[i*3 + 1] ], program, fb, options);
+            draw_line(in[ indices[i*3 + 1] ], in[ indices[i*3 + 2] ], program, fb, options);
+            draw_line(in[ indices[i*3 + 2] ], in[ indices[i*3 + 0] ], program, fb, options);
+        }
+    }
 
     template<typename Vertex, typename Varying, typename Uniforms, typename... Targets>
     void draw_triangle(const Varying& v_0, const Varying& v_1, const Varying& v_2, const Program<Vertex, Varying, Uniforms, Framebuffer<Targets...>>& program, Framebuffer<Targets...>& fb, const Options& options)
@@ -225,6 +229,15 @@ private:
         for(unsigned int i = 0; i < in.size() / 2; i++)
         {
             draw_line(in[i*2 + 0], in[i*2 + 1], program, fb, options);
+        }
+    }
+
+    template<typename Vertex, typename Varying, typename Uniforms, typename Indx, typename... Targets>
+    void draw_lines(const std::vector<Varying>& in, const std::vector<Indx>& indices, const Program<Vertex, Varying, Uniforms, Framebuffer<Targets...>>& program, Framebuffer<Targets...>& fb, const Options& options)
+    {
+        for(unsigned int i = 0; i < indices.size() / 2; i++)
+        {
+            draw_line(in[ indices[i*2 + 0] ], in[ indices[i*2 + 1] ], program, fb, options);
         }
     }
 

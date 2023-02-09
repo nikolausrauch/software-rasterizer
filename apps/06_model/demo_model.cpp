@@ -10,8 +10,6 @@
 #include <model.h>
 #include <objload.h>
 
-#include <thread>
-
 
 struct Vertex
 {

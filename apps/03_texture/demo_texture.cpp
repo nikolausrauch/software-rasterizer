@@ -23,6 +23,7 @@ struct Uniforms
     Sampler<RGBA8> texture;
 };
 
+
 int main(int argc, char** argv)
 {
     /*========== Setup Shader Program ========*/
@@ -41,13 +42,6 @@ int main(int argc, char** argv)
 
 
     /*========== Setup Buffer Data ========*/
-    Buffer<Vertex> buffer;
-    buffer.primitive = ePrimitive::TRIANGLES;
-    buffer.vertices = { { {-0.5, -0.5, 0.5}, {0.0, 0.0} },
-                        { { 0.5, -0.5, 0.5}, {1.0, 0.0} },
-                        { { 0.0,  0.5, 0.5}, {0.5, 1.0} } };
-
-    /* screen quad */
     Buffer<Vertex> buffer_quad;
     buffer_quad.primitive = ePrimitive::TRIANGLES;
     buffer_quad.vertices =  { { {-1.0, -1.0, 0.0}, {-1.0, -1.0} },
@@ -69,6 +63,7 @@ int main(int argc, char** argv)
 
     Renderer rasterizer(480, 480);
 
+    /* clear framebuffer */
     rasterizer.framebuffer().clear(Vec4(0.2, 0.2, 0.2, 1));
 
     /* submit draw call */
