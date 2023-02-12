@@ -47,6 +47,7 @@ struct Texture
         return m_values[j * m_width + i];
     }
 
+    void data(const std::vector<T>& values) { assert(values.size() == m_width*m_height); m_values = values; }
     std::vector<T>& data() { return m_values; }
     const std::vector<T>& data() const { return m_values; }
 

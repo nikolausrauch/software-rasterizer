@@ -37,7 +37,7 @@ l.t.r. ["Sad toaster"](https://skfb.ly/on9Dn) by tasha.lime, ["Coatlicue"](https
   - [ ] Cel Shading
   - [x] Normal Mapping
   - [x] Shadow Mapping
-  - [ ] Screen Space Ambient Occlusion
+  - [X] Screen Space Ambient Occlusion
   - [ ] Physically-based rendering     
 
 ## Examples
@@ -130,6 +130,11 @@ Blinn-Phong Illumination with diffuse, normal and ambient occlusion map ("Demon 
 Shadow Mapping (based on "low poly house" [Link](https://sketchfab.com/3d-models/low-poly-house-02635c7c191848699e88085c2ab27538) by [cofitelle](https://sketchfab.com/cofitelle) licensed under CC-BY-4.0 [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/))
 
 ![alt](img/example_shadow_mapping.png)
+
+Screen-space ambient occlussion ("Pokemon FireRed - Player's Room" [Link](https://sketchfab.com/3d-models/pokemon-firered-players-room-b23b6b253207463c97db2a7092adff74) by [Wesai] licensed under [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/))
+
+![alt](img/example_ssao.png)
+
 
 ## :books: Useful Resources
 [Tiny Renderer](https://github.com/ssloy/tinyrenderer/wiki/Lesson-0:-getting-started)

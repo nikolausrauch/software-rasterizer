@@ -34,6 +34,15 @@ struct Matrix3
         n[2][0] = M(0,2);   n[2][1] = M(1,2);   n[2][2] = M(2,2);
     }
 
+    Matrix3(const Vector3<T>& col0, const Vector3<T>& col1, const Vector3<T>& col2)
+        : Matrix3(
+            col0[0], col1[0], col2[0],
+            col0[1], col1[1], col2[1],
+            col0[2], col1[2], col2[2])
+    {
+
+    }
+
     T& operator ()(int i, int j)
     {
         assert(i < 3 && j < 3);
