@@ -88,6 +88,8 @@ struct Vector2
     {
         return os << "{" << +vec.x << ", " << +vec.y <<  "}";
     }
+
+    using AccumType = Vector2<float>;
 };
 
 
@@ -204,6 +206,7 @@ Vector2<float> linear(const Vector2<T>& a, const Vector2<T>& b, const Vector2<T>
 
 typedef Vector2<int> Vec2i;
 typedef Vector2<float> Vec2;
+typedef Vector2<std::uint8_t> Vec2u_8;
 
 //inline Vector2 project(const Vector2& a, const Vector2& b)
 //{

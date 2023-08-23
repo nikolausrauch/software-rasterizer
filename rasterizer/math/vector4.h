@@ -85,6 +85,8 @@ struct Vector4
         return ((&x)[i]);
     }
 
+    using AccumType = Vector4<float>;
+
 private:
     friend std::ostream& operator<< (std::ostream& os, const Vector4<T>& vec)
     {

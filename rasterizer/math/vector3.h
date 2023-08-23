@@ -89,6 +89,8 @@ struct Vector3
     {
         return os << "{" << +vec.x << ", " << +vec.y << ", " << +vec.z << "}";
     }
+
+    using AccumType = Vector3<float>;
 };
 
 template<typename T, typename U>
@@ -244,6 +246,7 @@ auto project(const Vector3<T>& a, const Vector3<U>& b)
 
 typedef Vector3<int> Vec3i;
 typedef Vector3<float> Vec3;
+typedef Vector3<std::uint8_t> Vec3u_8;
 
 
 //Vector3 project(const Vector3 &a, const Vector3 &b)

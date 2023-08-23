@@ -36,12 +36,35 @@ bool load_texture(Texture<RGBA8> &texture, const std::string &filepath)
     unsigned char* data = stbi_load(filepath.c_str(), &width, &height, &components, 4);
     if(data == nullptr) { return false; }
 
-    texture.m_width = width;
-    texture.m_height = height;
-    texture.data().resize(width*height);
-    std::memcpy(texture.ptr(), data, width*height*4*sizeof(unsigned char));
+    texture.m_mipmaps.reserve(1 + floor(std::log2(std::max(width, height))));
+    auto& base_level = texture.m_mipmaps.front();
+
+    base_level.m_width = width;
+    base_level.m_height = height;
+    base_level.data().resize(width*height);
+    std::memcpy(base_level.ptr(), data, width*height*4*sizeof(unsigned char));
 
     stbi_image_free(data);
 
     return true;
+}
+
+bool save_texture(const TextureStorage<RGBA8> &texture, const std::string &filepath)
+{
+    stbi_flip_vertically_on_write(true);
+    return stbi_write_png(filepath.c_str(), texture.width(), texture.height(), 4, texture.ptr(), texture.width() * 4);
+}
+
+template<>
+bool save_mipmaps(const Texture<RGBA8>& texture, const std::string& folder, const std::string& filename)
+{
+    const auto& mipmaps = texture.mipmaps();
+
+    bool ok = true;
+    for(unsigned int level = 0; level < mipmaps.size(); level++)
+    {
+        ok = ok && save_texture(mipmaps[level], folder + std::to_string(level) + "_" + filename);
+    }
+
+    return ok;
 }
