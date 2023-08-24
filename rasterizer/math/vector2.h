@@ -88,8 +88,6 @@ struct Vector2
     {
         return os << "{" << +vec.x << ", " << +vec.y <<  "}";
     }
-
-    using AccumType = Vector2<float>;
 };
 
 

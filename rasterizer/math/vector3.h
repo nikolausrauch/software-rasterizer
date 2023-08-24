@@ -89,8 +89,6 @@ struct Vector3
     {
         return os << "{" << +vec.x << ", " << +vec.y << ", " << +vec.z << "}";
     }
-
-    using AccumType = Vector3<float>;
 };
 
 template<typename T, typename U>
