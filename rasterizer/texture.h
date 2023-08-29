@@ -18,6 +18,9 @@ template<typename T>
 bool save_texture(const Texture<T>& texture, const std::string& filepath);
 
 template<typename T>
+bool load_mipmaps(Texture<T>& texture, const std::string& folder, const std::string& filename);
+
+template<typename T>
 bool save_mipmaps(const Texture<T>& texture, const std::string& folder, const std::string& filename);
 
 template<typename T>
@@ -65,9 +68,6 @@ private:
     int m_width;
     int m_height;
     std::vector<T> m_values;
-
-    friend bool load_texture<>(Texture<T>& texture, const std::string& filepath);
-    friend bool save_texture<>(const Texture<T>& texture, const std::string& filepath);
 };
 
 
@@ -141,8 +141,8 @@ struct Texture
                     {
                         for(int xx = 0; xx < 2; xx++)
                         {
-                            int px = x*2 + xx;
-                            int py = y*2 + yy;
+                            int px = std::min(x*2 + xx, previous_map.width() - 1);
+                            int py = std::min(y*2 + yy, previous_map.height() - 1);
                             value += previous_map(px, py);
                         }
                     }
@@ -169,6 +169,7 @@ private:
 
     friend bool load_texture<>(Texture<T>& texture, const std::string& filepath);
     friend bool save_texture<>(const Texture<T>& texture, const std::string& filepath);
+    friend bool load_mipmaps<>(Texture<T>& texture, const std::string& folder, const std::string& filename);
     friend bool save_mipmaps<>(const Texture<T>& texture, const std::string& folder, const std::string& filename);
 };
 
@@ -177,6 +178,14 @@ bool load_texture(Texture<T>& texture, const std::string& filepath)
 {
     (void) texture; (void) filepath;
     std::cerr << "[Texture] No specialized loading function load_texture<T> for this Texture type" << std::endl;
+    return false;
+}
+
+template<typename T>
+bool load_mipmaps(Texture<T>& texture, const std::string& folder, const std::string& filename)
+{
+    (void) texture; (void) folder; (void) filename;
+    std::cerr << "[Texture] No specialized loading function load_mipmaps<T> for this Texture type" << std::endl;
     return false;
 }
 
@@ -201,7 +210,14 @@ bool save_mipmaps(const Texture<T>& texture, const std::string& folder, const st
 typedef Vector4<std::uint8_t> RGBA8;
 template<> bool load_texture(Texture<RGBA8>& texture, const std::string& filepath);
 template<> bool save_texture(const Texture<RGBA8>& texture, const std::string& filepath);
+template<> bool load_mipmaps(Texture<RGBA8>& texture, const std::string& folder, const std::string& filename);
 template<> bool save_mipmaps(const Texture<RGBA8>& texture, const std::string& folder, const std::string& filename);
+
+typedef Vector4<float> RGBAF;
+template<> bool load_texture(Texture<RGBAF>& texture, const std::string& filepath);
+template<> bool save_texture(const Texture<RGBAF>& texture, const std::string& filepath);
+template<> bool load_mipmaps(Texture<RGBAF>& texture, const std::string& folder, const std::string& filename);
+template<> bool save_mipmaps(const Texture<RGBAF>& texture, const std::string& folder, const std::string& filename);
 
 typedef float Depth;
 template<> bool save_texture(const Texture<Depth>& texture, const std::string& filepath);
