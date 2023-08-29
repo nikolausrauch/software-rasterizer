@@ -210,6 +210,57 @@ void loadMaterial(MaterialType& material, const tinyobj::material_t& loaded, con
             material.map_displacement.load(path.string());
         }
     }
+
+    if constexpr(detail::has_member<MaterialType>::map_albedo::value)
+    {
+        material.map_albedo = Texture<RGBA8>(1, 1, RGBA8(255, 255, 255, 255));
+
+        if(warnings && loaded.diffuse_texname.empty())
+        {
+            std::cerr << "[loadObj] albedo map missing [" + loaded.name + "] (" + filepath.string() + ")" << std::endl;
+            std::cerr << "[loadObj] default albedo map loaded [" + loaded.name + "]" << std::endl;
+        }
+        else if(!loaded.diffuse_texname.empty())
+        {
+            auto path = filepath.parent_path();
+            path /= std::filesystem::path(loaded.diffuse_texname);
+            material.map_albedo.load(path.string());
+        }
+    }
+
+    if constexpr(detail::has_member<MaterialType>::map_metallic::value)
+    {
+        material.map_metallic = Texture<RGBA8>(1, 1, RGBA8(255, 255, 255, 255));
+
+        if(warnings && loaded.metallic_texname.empty())
+        {
+            std::cerr << "[loadObj] metallic map missing [" + loaded.name + "] (" + filepath.string() + ")" << std::endl;
+            std::cerr << "[loadObj] default metallic map loaded [" + loaded.name + "]" << std::endl;
+        }
+        else if(!loaded.metallic_texname.empty())
+        {
+            auto path = filepath.parent_path();
+            path /= std::filesystem::path(loaded.metallic_texname);
+            material.map_metallic.load(path.string());
+        }
+    }
+
+    if constexpr(detail::has_member<MaterialType>::map_roughness::value)
+    {
+        material.map_roughness = Texture<RGBA8>(1, 1, RGBA8(255, 255, 255, 255));
+
+        if(warnings && loaded.roughness_texname.empty())
+        {
+            std::cerr << "[loadObj] roughness map missing [" + loaded.name + "] (" + filepath.string() + ")" << std::endl;
+            std::cerr << "[loadObj] default roughness map loaded [" + loaded.name + "]" << std::endl;
+        }
+        else if(!loaded.roughness_texname.empty())
+        {
+            auto path = filepath.parent_path();
+            path /= std::filesystem::path(loaded.roughness_texname);
+            material.map_roughness.load(path.string());
+        }
+    }
 }
 
 }
@@ -327,8 +378,11 @@ Model<Mesh> loadObj(const std::filesystem::path& filepath, bool warnings = false
                     auto uv1 = v2.texcoord - v1.texcoord;
                     auto uv2 = v3.texcoord - v1.texcoord;
 
-                    float invDet = 1.0f / (uv1.x * uv2.y - uv2.x * uv1.y);
+                    /* TODO: this needs a cleaner solution (what if uv coordinates are the same) */
+                    if(length(uv1) < 1e-8f) { uv1.x = 1e-6f; }
+                    if(length(uv2) < 1e-8f) { uv2.y = 1e-6f; }
 
+                    float invDet = 1.0f / std::max(uv1.x * uv2.y - uv2.x * uv1.y, 1e-6f);
 
                     int idx_1 = shape.mesh.indices[index_offset + 0].vertex_index;
                     int idx_2 = shape.mesh.indices[index_offset + 1].vertex_index;

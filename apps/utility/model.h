@@ -53,6 +53,12 @@ struct _AllMaterial
     Texture<RGBA8> map_specular_highlight;
     Texture<RGBA8> map_bump;
     Texture<RGBA8> map_displacement;
+
+    /* pbr */
+    Texture<RGBA8> map_albedo;
+    Texture<RGBA8> map_metallic;
+    Texture<RGBA8> map_roughness;
+    /* TODO: remaining values */
 };
 
 
@@ -152,6 +158,11 @@ struct has_member
     property(map_specular_highlight);
     property(map_bump);
     property(map_displacement);
+
+    /* pbr materials */
+    property(map_albedo);
+    property(map_roughness);
+    property(map_metallic);
 
 #undef test_one
 #undef test_two
