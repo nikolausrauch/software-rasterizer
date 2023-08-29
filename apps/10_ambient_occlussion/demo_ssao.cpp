@@ -175,7 +175,7 @@ int main(int argc, char** argv)
     auto& uniforms_gpass = program_geometry.uniforms();
     uniforms_gpass.proj = Mat4::perspective(radians(45.0f), 1280.0f/720.0f, 1.0, 16.0);
     uniforms_gpass.view = Mat4::lookAt({6, 5, 7}, Vec3{0, 0, 0});
-    uniforms_gpass.model = Mat4::translation(Vec4{0, 0, 0});
+    uniforms_gpass.model = Mat4::translation(Vec3{0, 0, 0});
     uniforms_gpass.material.diffuse = mesh.materialGroups().front().material.map_diffuse;
     uniforms_gpass.material.diffuse.filter = eFilter::NEAREST;
 

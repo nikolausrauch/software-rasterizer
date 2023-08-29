@@ -131,7 +131,7 @@ struct Matrix3
     }
 
     template<typename t = T, typename std::enable_if_t<std::is_floating_point_v<t>, int> = 0>
-    static Matrix3 rotation(T r, const Vector3<T> &a)
+    static Matrix3 rotation(T r, const Vector3<T>& a)
     {
         float c = std::cos(r);
         float s = std::sin(r);
@@ -152,7 +152,7 @@ struct Matrix3
 
 
 template<typename T, typename U>
-auto operator *(const Matrix3<T> &A, const Matrix3<U> &B)
+auto operator *(const Matrix3<T>& A, const Matrix3<U>& B)
 {
     return Matrix3<decltype( T() * U() )>
                     (A(0,0) * B(0,0) + A(0,1) * B(1,0) + A(0,2) * B(2,0),
@@ -176,6 +176,44 @@ auto operator *(const Matrix3<T>& M, const Vector3<U>& v)
                      M(1,0) * v.x + M(1,1) * v.y + M(1,2) * v.z,
                      M(2,0) * v.x + M(2,1) * v.y + M(2,2) * v.z);
 }
+
+template<typename T, typename U>
+auto operator +(const Matrix3<T>& A, const Matrix3<U>& B)
+{
+    return Matrix3<decltype( T() + U() )>
+                    (A(0,0) + B(0,0), A(0,1) + B(0,1), A(0,2) + B(0,2),
+                     A(1,0) + B(1,0), A(1,1) + B(1,1), A(1,2) + B(1,2),
+                     A(2,0) + B(2,0), A(2,1) + B(2,1), A(2,2) + B(2,2));
+}
+
+
+template<typename T, typename U>
+auto operator -(const Matrix3<T>& A, const Matrix3<U>& B)
+{
+    return Matrix3<decltype( T() + U() )>
+                    (A(0,0) - B(0,0), A(0,1) - B(0,1), A(0,2) - B(0,2),
+                     A(1,0) - B(1,0), A(1,1) - B(1,1), A(1,2) - B(1,2),
+                     A(2,0) - B(2,0), A(2,1) - B(2,1), A(2,2) - B(2,2));
+}
+
+template<typename T, typename U>
+auto operator *(const Matrix3<T>& A, T s)
+{
+    return Matrix3<decltype( T() * U() )>
+                    (A(0,0) * s, A(0,1) * s, A(0,2) * s,
+                     A(1,0) * s, A(1,1) * s, A(1,2) * s,
+                     A(2,0) * s, A(2,1) * s, A(2,2) * s);
+}
+
+template<typename T, typename U>
+auto operator *(U s, const Matrix3<T>& A)
+{
+    return Matrix3<decltype( T() * U() )>
+                    (A(0,0) * s, A(0,1) * s, A(0,2) * s,
+                     A(1,0) * s, A(1,1) * s, A(1,2) * s,
+                     A(2,0) * s, A(2,1) * s, A(2,2) * s);
+}
+
 
 template<typename T, typename std::enable_if_t<std::is_floating_point_v<T>, int> = 0>
 Matrix3<T> inverse(const Matrix3<T>& M)

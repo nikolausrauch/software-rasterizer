@@ -107,13 +107,13 @@ struct Matrix4
     }
 
     template<typename t = T, typename std::enable_if_t<std::is_floating_point_v<t>, int> = 0>
-    static Matrix4 rotation(T r, const Vector3<T> &a)
+    static Matrix4 rotation(T r, const Vector3<T>& a)
     {
         return Matrix4(Matrix3<T>::rotation(r, a));
     }
 
     template<typename t = T, typename std::enable_if_t<std::is_floating_point_v<t>, int> = 0>
-    static Matrix4 translation(const Vector3<T> &v)
+    static Matrix4 translation(const Vector3<T>& v)
     {
         return Matrix4(1, 0, 0, v.x,
                         0, 1, 0, v.y,
@@ -146,7 +146,7 @@ struct Matrix4
     }
 
     template<typename t = T, typename std::enable_if_t<std::is_floating_point_v<t>, int> = 0>
-    static Matrix4 lookAt(const Vector3<T> &pos, const Vector3<T> &at, const Vector3<T> &up = {0, 1, 0})
+    static Matrix4 lookAt(const Vector3<T>& pos, const Vector3<T>& at, const Vector3<T>& up = {0, 1, 0})
     {
         auto front = normalize(at - pos);
         auto right = normalize(cross(front, up));
@@ -198,8 +198,46 @@ auto operator *(const Matrix4<T>& M, const Vector4<U>& v)
                     M(3,0) * v[0] + M(3,1) * v[1] + M(3,2) * v[2] + M(3,3) * v[3]);
 }
 
+template<typename T, typename U>
+auto operator +(const Matrix4<T>& A, const Matrix4<U> &B)
+{
+    return Matrix4<decltype( T() + U() )>
+                    (A(0,0) + B(0,0), A(0,1) + B(0,1), A(0,2) + B(0,2), A(0, 3) + B(0, 3),
+                     A(1,0) + B(1,0), A(1,1) + B(1,1), A(1,2) + B(1,2), A(1, 3) + B(1, 3),
+                     A(2,0) + B(2,0), A(2,1) + B(2,1), A(2,2) + B(2,2), A(2, 3) + B(2, 3),
+                     A(3,0) + B(3,0), A(3,1) + B(3,1), A(3,2) + B(3,2), A(3, 3) + B(3, 3));
+}
+
+
+template<typename T, typename U>
+auto operator -(const Matrix4<T>& A, const Matrix4<U> &B)
+{
+    return Matrix4<decltype( T() - U() )>
+                    (A(0,0) - B(0,0), A(0,1) - B(0,1), A(0,2) - B(0,2), A(0, 3) - B(0, 3),
+                     A(1,0) - B(1,0), A(1,1) - B(1,1), A(1,2) - B(1,2), A(1, 3) - B(1, 3),
+                     A(2,0) - B(2,0), A(2,1) - B(2,1), A(2,2) - B(2,2), A(2, 3) - B(2, 3),
+                     A(3,0) - B(3,0), A(3,1) - B(3,1), A(3,2) - B(3,2), A(3, 3) - B(3, 3));
+}
+
+template<typename T, typename U>
+auto operator *(const Matrix4<T>& A, T s)
+{
+    return Matrix4<decltype( T() - U() )>
+                    (A(0,0) * s, A(0,1) * s, A(0,2) * s, A(0, 3) * s,
+                     A(1,0) * s, A(1,1) * s, A(1,2) * s, A(1, 3) * s,
+                     A(2,0) * s, A(2,1) * s, A(2,2) * s, A(2, 3) * s,
+                     A(3,0) * s, A(3,1) * s, A(3,2) * s, A(3, 3) * s);
+}
+
+template<typename T, typename U>
+auto operator *(U s, const Matrix4<T>& A)
+{
+    return A * s;
+}
+
+
 template<typename T, typename std::enable_if_t<std::is_floating_point_v<T>, int> = 0>
-auto inverse(const Matrix4<T> &M)
+auto inverse(const Matrix4<T>& M)
 {
     const auto& a = reinterpret_cast<const Vector3<T>&>(M[0]);
     const auto& b = reinterpret_cast<const Vector3<T>&>(M[1]);

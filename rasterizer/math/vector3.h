@@ -14,9 +14,27 @@ struct Vector3
 {
     T x, y, z;
 
+    Vector3()
+        : x(0), y(0), z(0)
+    {
 
-    Vector3(T x = 0, T y = 0, T z = 0)
+    }
+
+    Vector3(T v)
+        : x(v), y(v), z(v)
+    {
+
+    }
+
+    Vector3(T x, T y, T z)
         : x(x), y(y), z(z)
+    {
+
+    }
+
+    template<typename U>
+    Vector3(const Vector2<U>& a, T v)
+        : x(a.x), y(a.y), z(v)
     {
 
     }
@@ -55,6 +73,16 @@ struct Vector3
         return *this *= (1.0 / s);
     }
 
+    Vector3& operator /=(Vector3 s)
+    {
+        assert(s.x != 0 && s.y != 0 && s.z != 0);
+        x /= s.x;
+        y /= s.y;
+        z /= s.z;
+
+        return *this;
+    }
+
     Vector3& operator +=(const Vector3& v)
     {
         x += v.x;
@@ -69,6 +97,24 @@ struct Vector3
         x -= v.x;
         y -= v.y;
         z -= v.z;
+
+        return *this;
+    }
+
+    Vector3& operator +=(const T v)
+    {
+        x += v;
+        y += v;
+        z += v;
+
+        return *this;
+    }
+
+    Vector3& operator -=(const T v)
+    {
+        x -= v;
+        y -= v;
+        z -= v;
 
         return *this;
     }
@@ -113,6 +159,18 @@ template<typename T, typename U>
 auto operator -(const Vector3<T>& a, const Vector3<U>& b)
 {
     return Vector3<decltype(T() - U())>(a.x - b.x, a.y - b.y, a.z - b.z);
+}
+
+template<typename T>
+auto operator +(const Vector3<T>& a, const T v)
+{
+    return Vector3<T>(a.x + v, a.y + v, a.z + v);
+}
+
+template<typename T>
+auto operator -(const Vector3<T>& a, const T v)
+{
+    return Vector3<T>(a.x - v, a.y - v, a.z - v);
 }
 
 template<typename T, typename U>
@@ -183,6 +241,12 @@ auto dot(const Vector3<T>& a, const Vector3<U>& b)
 }
 
 template<typename T, typename U>
+auto pow(const Vector3<T>& a, const Vector3<U>& b)
+{
+    return Vector3<decltype(T() * U())>{ std::pow(a.x, b.x), std::pow(a.y, b.y), std::pow(a.z, b.z) };
+}
+
+template<typename T, typename U>
 auto cross(const Vector3<T>& a, const Vector3<U>& b)
 {
     return Vector3<decltype(T() * U())>(
@@ -192,48 +256,10 @@ auto cross(const Vector3<T>& a, const Vector3<U>& b)
                 );
 }
 
-template<typename T>
-Vector3<float> barycentric(const Vector2<T>& a, const Vector2<T>& b, const Vector2<T>& c, const Vector2<T>& p)
-{
-    auto v_0 = b - a;
-    auto v_1 = c - a;
-    auto v_2 = p - a;
-
-    float D = v_0.x * v_1.y - v_1.x * v_0.y;
-
-    float v = (v_2.x * v_1.y - v_1.x * v_2.y) / D;
-    float w = (v_0.x * v_2.y - v_2.x * v_0.y) / D;
-    float u = 1.0f - v - w;
-
-    return {u, v, w};
-}
-
-template<typename T>
-Vector3<float> barycentric(const Vector3<T>& a, const Vector3<T>& b, const Vector3<T>& c, const Vector3<T>& p)
-{
-    auto v_0 = b - a;
-    auto v_1 = c - a;
-    auto v_2 = p - a;
-
-    float d_00 = dot(v_0, v_0);
-    float d_01 = dot(v_0, v_1);
-    float d_11 = dot(v_1, v_1);
-    float d_20 = dot(v_2, v_0);
-    float d_21 = dot(v_2, v_1);
-
-    float D = d_00 * d_11 - d_01 * d_01;
-
-    float v = (d_11 * d_20 - d_01 * d_21) / D;
-    float w = (d_00 * d_21 - d_01 * d_20) / D;
-    float u = 1.0f - v - w;
-
-    return {u, v, w};
-}
-
 template<typename T, typename U>
 auto reflect(const Vector3<T>& I, const Vector3<U>& N)
 {
-    return I - 2.0f * dot(I, N) * N;
+    return I - 2.0f * dot(N, I) * N;
 }
 
 template<typename T, typename U>
@@ -242,19 +268,38 @@ auto project(const Vector3<T>& a, const Vector3<U>& b)
     return (b * (dot(a, b) / dot(b, b)));
 }
 
+
+template<typename T>
+auto mix(const Vector3<T>& a, const Vector3<T>& b, float t)
+{
+    t = std::clamp(t, 0.0f, 1.0f);
+    return (1.0f - t) * a + t * b;
+}
+
+template<typename T>
+Vector3<T> min(const Vector3<T>& a, const Vector3<T>& b)
+{
+    return
+    {
+        std::min(a.x, b.x),
+        std::min(a.y, b.y),
+        std::min(a.z, b.z)
+    };
+}
+
+
+template<typename T>
+Vector3<T> max(const Vector3<T>& a, const Vector3<T>& b)
+{
+    return
+    {
+        std::max(a.x, b.x),
+        std::max(a.y, b.y),
+        std::max(a.z, b.z)
+    };
+}
+
 typedef Vector3<int> Vec3i;
 typedef Vector3<float> Vec3;
 typedef Vector3<std::uint8_t> Vec3u_8;
-
-
-//Vector3 project(const Vector3 &a, const Vector3 &b)
-//{
-//    return (b * (dot(a, b) / dot(b, b)));
-//}
-
-//Vector3 reject(const Vector3 &a, const Vector3 &b)
-//{
-//    return (a - b * (dot(a, b) / dot(b, b)));
-//}
-
 

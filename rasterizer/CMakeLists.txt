@@ -12,6 +12,8 @@ project( rasterizer )
 set( SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/renderer.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/texture.cpp"
+
+    "${CMAKE_CURRENT_SOURCE_DIR}/math/utility.cpp"
     )
 
 set( HDR
@@ -29,6 +31,7 @@ set( HDR
     "${CMAKE_CURRENT_SOURCE_DIR}/math/vector4.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/math/matrix3.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/math/matrix4.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/math/utility.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/math/rectangle.h"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/detail/test_member.h"

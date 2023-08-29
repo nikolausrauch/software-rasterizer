@@ -14,7 +14,19 @@ struct Vector2
 {
     T x, y;
 
-    Vector2(T x = 0, T y = 0)
+    Vector2()
+        : x(0), y(0)
+    {
+
+    }
+
+    Vector2(T v)
+        : x(v), y(v)
+    {
+
+    }
+
+    Vector2(T x, T y)
         : x(x), y(y)
     {
 
@@ -52,10 +64,25 @@ struct Vector2
         return *this;
     }
 
+    Vector2& operator*=(Vector2 a)
+    {
+        x *= a.x;
+        y *= a.y;
+        return *this;
+    }
+
     Vector2& operator/=(T s)
     {
         assert(s != 0.0f);
         return *this *= (1.0 / s);
+    }
+
+    Vector2& operator/=(Vector2 s)
+    {
+        assert(s.x != 0 && s.y != 0);
+        x /= s.x;
+        y /= s.y;
+        return *this;
     }
 
     Vector2& operator+=(const Vector2 &v)
@@ -65,10 +92,24 @@ struct Vector2
         return *this;
     }
 
+    Vector2& operator+=(const T v)
+    {
+        x += v;
+        y += v;
+        return *this;
+    }
+
     Vector2& operator-=(const Vector2 &v)
     {
         x -= v.x;
         y -= v.y;
+        return *this;
+    }
+
+    Vector2& operator-=(const T v)
+    {
+        x -= v;
+        y -= v;
         return *this;
     }
 
@@ -103,10 +144,22 @@ auto operator +(const Vector2<T>& a, const Vector2<U>& b)
     return Vector2<decltype(T() + U())>(a.x + b.x, a.y + b.y);
 }
 
+template<typename T>
+auto operator +(const Vector2<T>& a, T v)
+{
+    return Vector2<T>(a.x + v, a.y + v);
+}
+
 template<typename T, typename U>
 auto operator -(const Vector2<T>& a, const Vector2<U>& b)
 {
     return Vector2<decltype(T() - U())>(a.x - b.x, a.y - b.y);
+}
+
+template<typename T>
+auto operator -(const Vector2<T>& a, T v)
+{
+    return Vector2<T>(a.x - v, a.y - v);
 }
 
 template<typename T, typename U>
@@ -131,6 +184,12 @@ template<typename T, typename U>
 auto operator /(U s, const Vector2<T>& v)
 {
     return Vector2<decltype( U() / T())> (s / v.x, s / v.y);
+}
+
+template<typename T, typename U>
+auto operator /(const Vector2<T>& a, const Vector2<U>& b)
+{
+    return Vector2<decltype(T() / T())>(a.x / b.x, a.y / b.y);
 }
 
 template<typename T>
@@ -158,16 +217,16 @@ Vector2<float> normalize(const Vector2<T>& v)
     return v / length(v);
 }
 
-template<typename T>
-auto abs(const Vector2<T>& v)
-{
-    return Vector2<T>{ std::abs(v.x), std::abs(v.y) };
-}
-
 template<typename T, typename U>
 auto dot(const Vector2<T>& a, const Vector2<U>& b)
 {
     return a.x * b.x + a.y + b.y;
+}
+
+template<typename T>
+auto abs(const Vector2<T>& v)
+{
+    return Vector2<T>{ std::abs(v.x), std::abs(v.y) };
 }
 
 template<typename T>
@@ -201,17 +260,25 @@ Vector2<float> linear(const Vector2<T>& a, const Vector2<T>& b, const Vector2<T>
     return { frac, 1.0f - frac };
 }
 
+template<typename T>
+auto mix(const Vector2<T>& a, const Vector2<T>& b, float t)
+{
+    t = std::clamp(t, 0.0f, 1.0f);
+    return (1.0f - t) * a + t * b;
+}
+
+template<typename T>
+auto min(const Vector2<T>& a, const Vector2<T>& b)
+{
+    return Vector2<T>{ std::min(a.x, b.x), std::min(a.y, b.y) };
+}
+
+template<typename T>
+auto max(const Vector2<T>& a, const Vector2<T>& b)
+{
+    return Vector2<T>{ std::max(a.x, b.x), std::max(a.y, b.y) };
+}
 
 typedef Vector2<int> Vec2i;
 typedef Vector2<float> Vec2;
 typedef Vector2<std::uint8_t> Vec2u_8;
-
-//inline Vector2 project(const Vector2& a, const Vector2& b)
-//{
-//    return (b * (dot(a, b) / dot(b, b)));
-//}
-
-//inline Vector2 reject(const Vector2& a, const Vector2& b)
-//{
-//    return (a - b * (dot(a, b) / dot(b, b)));
-//}

@@ -90,7 +90,7 @@ int main(int argc, char** argv)
         static float time = 0.0;
         time += dt;
 
-        uniforms.model = Mat4::translation(Vec4{0, -0.75, 0}) * Mat4::rotationY(-radians(time*20.0f));
+        uniforms.model = Mat4::translation(Vec3{0, -0.75, 0}) * Mat4::rotationY(-radians(time*20.0f));
         TIME_MS(rasterizer.draw(program, buffer));
 
         window.swap(rasterizer.framebuffer());

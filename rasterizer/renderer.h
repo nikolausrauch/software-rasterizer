@@ -4,8 +4,7 @@
 #include "program.h"
 #include "framebuffer.h"
 
-#include "math/vector2.h"
-#include "math/vector4.h"
+#include "math/utility.h"
 #include "math/rectangle.h"
 
 #include "detail/test_member.h"
