@@ -69,6 +69,7 @@ void loadMaterial(MaterialType& material, const tinyobj::material_t& loaded, con
         material.name = loaded.name;
     }
 
+    /*----------------- obj standard -------------------*/
     if constexpr(detail::has_member<MaterialType>::ambient::value)
     {
         material.ambient = { loaded.ambient[0], loaded.ambient[1], loaded.ambient[2] };
@@ -211,6 +212,43 @@ void loadMaterial(MaterialType& material, const tinyobj::material_t& loaded, con
         }
     }
 
+
+    /*----------------- pbr extension -------------------*/
+    if constexpr(detail::has_member<MaterialType>::roughness::value)
+    {
+        material.roughness = loaded.roughness;
+    }
+
+    if constexpr(detail::has_member<MaterialType>::metallic::value)
+    {
+        material.metallic = loaded.metallic;
+    }
+
+    if constexpr(detail::has_member<MaterialType>::sheen::value)
+    {
+        material.sheen = loaded.sheen;
+    }
+
+    if constexpr(detail::has_member<MaterialType>::clearcoat_thickness::value)
+    {
+        material.clearcoat_thickness = loaded.clearcoat_thickness;
+    }
+
+    if constexpr(detail::has_member<MaterialType>::clearcoat_roughness::value)
+    {
+        material.clearcoat_roughness = loaded.clearcoat_roughness;
+    }
+
+    if constexpr(detail::has_member<MaterialType>::anisotropy::value)
+    {
+        material.anisotropy = loaded.anisotropy;
+    }
+
+    if constexpr(detail::has_member<MaterialType>::anisotropy_rotation::value)
+    {
+        material.anisotropy_rotation = loaded.anisotropy_rotation;
+    }
+
     if constexpr(detail::has_member<MaterialType>::map_albedo::value)
     {
         material.map_albedo = Texture<RGBA8>(1, 1, RGBA8(255, 255, 255, 255));
@@ -230,7 +268,7 @@ void loadMaterial(MaterialType& material, const tinyobj::material_t& loaded, con
 
     if constexpr(detail::has_member<MaterialType>::map_metallic::value)
     {
-        material.map_metallic = Texture<RGBA8>(1, 1, RGBA8(255, 255, 255, 255));
+        material.map_metallic = Texture<RGBA8>(1, 1, RGBA8(0, 0, 0, 255));
 
         if(warnings && loaded.metallic_texname.empty())
         {
@@ -259,6 +297,92 @@ void loadMaterial(MaterialType& material, const tinyobj::material_t& loaded, con
             auto path = filepath.parent_path();
             path /= std::filesystem::path(loaded.roughness_texname);
             material.map_roughness.load(path.string());
+        }
+    }
+
+    if constexpr(detail::has_member<MaterialType>::map_normal::value)
+    {
+        material.map_normal = Texture<RGBA8>(1, 1, RGBA8(0, 0, 0, 255));
+
+        if(warnings && loaded.normal_texname.empty())
+        {
+            std::cerr << "[loadObj] normal map missing [" + loaded.name + "] (" + filepath.string() + ")" << std::endl;
+            std::cerr << "[loadObj] default normal map loaded [" + loaded.name + "]" << std::endl;
+        }
+        else if(!loaded.normal_texname.empty())
+        {
+            auto path = filepath.parent_path();
+            path /= std::filesystem::path(loaded.normal_texname);
+            material.map_normal.load(path.string());
+        }
+    }
+
+
+    if constexpr(detail::has_member<MaterialType>::map_metallic_roughness::value)
+    {
+        material.map_metallic_roughness = Texture<RGBA8>(1, 1, RGBA8(0, 50, 0, 255));
+
+        Texture<RGBA8> map_roughness(1, 1, RGBA8(255, 255, 255, 255));
+        Texture<RGBA8> map_metallic(1, 1, RGBA8(0, 0, 0, 255));
+
+        if(warnings && loaded.metallic_texname.empty())
+        {
+            std::cerr << "[loadObj] metallic map missing [" + loaded.name + "] (" + filepath.string() + ")" << std::endl;
+
+            if(loaded.roughness_texname.empty())
+            {
+                std::cerr << "[loadObj] roughness map missing [" + loaded.name + "] (" + filepath.string() + ")" << std::endl;
+                std::cerr << "[loadObj] default roughness metallic map loaded [" + loaded.name + "]" << std::endl;
+            }
+            else
+            {
+                std::cerr << "[loadObj] assumes roughness metallic map is stored in roughness map [" + loaded.name + "] (" + filepath.string() + ")" << std::endl;
+
+                auto path = filepath.parent_path();
+                path /= std::filesystem::path(loaded.roughness_texname);
+                material.map_metallic_roughness.load(path.string());
+            }
+        }
+        else if(!loaded.metallic_texname.empty() && loaded.roughness_texname.empty())
+        {
+            std::cerr << "[loadObj] metallic map is used for roughness metallic map [" + loaded.name + "] (" + filepath.string() + ")" << std::endl;
+            auto path = filepath.parent_path();
+            path /= std::filesystem::path(loaded.metallic_texname);
+            material.map_metallic_roughness.load(path.string());
+        }
+        else if(!loaded.metallic_texname.empty() && !loaded.roughness_texname.empty())
+        {
+            std::cerr << "[loadObj] metallic and roughness maps are merged [" + loaded.name + "] (" + filepath.string() + ")" << std::endl;
+
+            {
+                auto path = filepath.parent_path();
+                path /= std::filesystem::path(loaded.roughness_texname);
+                map_roughness.load(path.string());
+            }
+
+            {
+                auto path = filepath.parent_path();
+                path /= std::filesystem::path(loaded.roughness_texname);
+                map_metallic.load(path.string());
+            }
+
+            if( (map_metallic.width() != map_roughness.width())
+             || (map_metallic.height() != map_roughness.height()))
+            {
+                std::cerr << "[loadObj] metallic and roughness maps are not of the same dimensions (required if merging is forced)"  << std::endl;
+            }
+            else
+            {
+                /* merge to single texture */
+                material.map_metallic_roughness = Texture<RGBA8>(map_metallic.width(), map_metallic.height(), RGBA8(0, 0, 0, 255));
+                for(int j = 0; j < map_metallic.height(); j++)
+                {
+                    for(int i = 0; i < map_metallic.width(); i++)
+                    {
+                        material.map_metallic_roughness(i, j) = { 0, map_roughness(i,j).x, map_metallic(i,j).x, 255 };
+                    }
+                }
+            }
         }
     }
 }

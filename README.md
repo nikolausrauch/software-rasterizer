@@ -22,7 +22,8 @@ l.t.r. ["Sad toaster"](https://skfb.ly/on9Dn) by tasha.lime, ["Coatlicue"](https
   - [x] face culling
   - [x] custom framebuffer
   - [x] line rendering (wireframe rendering)
-  - [ ] mip mapping
+  - [x] mip map generation
+  - [ ] mip map level computation
   - [ ] anisotropic filtering
   - [ ] cubemap
 - Examples
@@ -38,7 +39,7 @@ l.t.r. ["Sad toaster"](https://skfb.ly/on9Dn) by tasha.lime, ["Coatlicue"](https
   - [x] Normal Mapping
   - [x] Shadow Mapping
   - [X] Screen Space Ambient Occlusion
-  - [ ] Physically-based rendering     
+  - [X] Physically-based rendering + offline pre-integration    
 
 ## Examples
 
@@ -117,7 +118,7 @@ rasterizer.draw(program, buffer);
 rasterizer.framebuffer().color().save("00_triangle.png");
 
 ```
-### Results
+## Results
 
 Model Loading and Texture Mapping ("Sad toaster" [Link](https://skfb.ly/on9Dn) by tasha.lime.)
 
@@ -131,18 +132,19 @@ Shadow Mapping (based on "low poly house" [Link](https://sketchfab.com/3d-models
 
 ![alt](img/example_shadow_mapping.png)
 
-Screen-space ambient occlussion ("Pokemon FireRed - Player's Room" [Link](https://sketchfab.com/3d-models/pokemon-firered-players-room-b23b6b253207463c97db2a7092adff74) by [Wesai] licensed under [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/))
+Screen-space ambient occlussion ("Pokemon FireRed - Player's Room" [Link](https://sketchfab.com/3d-models/pokemon-firered-players-room-b23b6b253207463c97db2a7092adff74) by [Wesai](https://sketchfab.com/Wesai) licensed under [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/))
 
 ![alt](img/example_ssao.png)
 
+Physically-based rendering with pre-integrated irradiance and radiance maps ("Bilora Bella 46 Camera" [Link](https://sketchfab.com/3d-models/dae-bilora-bella-46-camera-game-ready-asset-eeb9d9f0627f4783b5d16a8732f0d1a4) by [Martijn Vaes](https://sketchfab.com/MartijnVaes) licensed under [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/))
+
+![alt](img/example_pbr.png)
 
 ## :books: Useful Resources
-[Tiny Renderer](https://github.com/ssloy/tinyrenderer/wiki/Lesson-0:-getting-started)
-
+[Tiny Renderer](https://github.com/ssloy/tinyrenderer/wiki/Lesson-0:-getting-started)   
 [Scratchpixel Lesson](https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/overview-rasterization-algorithm.html)
-
-[Rasterator](https://github.com/diharaw/Rasterator)
-
-[SRPBR](https://github.com/niepp/srpbr)
-
-[Stack Overflow Perspective Interpolation](https://stackoverflow.com/questions/24441631/how-exactly-does-opengl-do-perspectively-correct-linear-interpolation)
+[Rasterator](https://github.com/diharaw/Rasterator)   
+[SRPBR](https://github.com/niepp/srpbr)   
+[Stack Overflow Perspective Interpolation](https://stackoverflow.com/questions/24441631/how-exactly-does-opengl-do-perspectively-correct-linear-interpolation)   
+[learnopengl Tutorials](https://learnopengl.com/PBR/Lighting)   
+[IBL Blogpost by Bruno Opsenica](https://bruop.github.io/ibl/)

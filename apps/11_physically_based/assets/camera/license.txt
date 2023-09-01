@@ -1,0 +1,13 @@
+Model Information:
+* title:	DAE - Bilora Bella 46 Camera - Game Ready Asset
+* source:	https://sketchfab.com/3d-models/dae-bilora-bella-46-camera-game-ready-asset-eeb9d9f0627f4783b5d16a8732f0d1a4
+* author:	Martijn Vaes (https://sketchfab.com/MartijnVaes)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "DAE - Bilora Bella 46 Camera - Game Ready Asset" (https://sketchfab.com/3d-models/dae-bilora-bella-46-camera-game-ready-asset-eeb9d9f0627f4783b5d16a8732f0d1a4) by Martijn Vaes (https://sketchfab.com/MartijnVaes) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+
+obj, mat file created by Niko 

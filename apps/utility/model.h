@@ -55,10 +55,21 @@ struct _AllMaterial
     Texture<RGBA8> map_displacement;
 
     /* pbr */
+    float roughness;
+    float metallic;
+    float sheen;
+    float clearcoat_thickness;
+    float clearcoat_roughness;
+    float anisotropy;
+    float anisotropy_rotation;
+
     Texture<RGBA8> map_albedo;
     Texture<RGBA8> map_metallic;
     Texture<RGBA8> map_roughness;
-    /* TODO: remaining values */
+    Texture<RGBA8> map_normal;
+
+    /* force combined metallic and roughness (map_Pm in blue and map_Pr in red) */
+    Texture<RGBA8> map_metallic_roughness;
 };
 
 
@@ -152,6 +163,7 @@ struct has_member
     property(shininess);
     property(ior);
     property(dissolve);
+
     property(map_ambient);
     property(map_diffuse);
     property(map_specular);
@@ -160,9 +172,20 @@ struct has_member
     property(map_displacement);
 
     /* pbr materials */
+    property(roughness);
+    property(metallic);
+    property(sheen);
+    property(clearcoat_thickness);
+    property(clearcoat_roughness);
+    property(anisotropy);
+    property(anisotropy_rotation);
+
     property(map_albedo);
     property(map_roughness);
     property(map_metallic);
+    property(map_normal);
+
+    property(map_metallic_roughness);
 
 #undef test_one
 #undef test_two

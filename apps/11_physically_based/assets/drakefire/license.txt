@@ -1,0 +1,13 @@
+Model Information:
+* title:	Drakefire Pistol
+* source:	https://sketchfab.com/3d-models/drakefire-pistol-bee02e85f22d4eaaa3c0144f11204843
+* author:	Teliri (https://sketchfab.com/Teliri)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Drakefire Pistol" (https://sketchfab.com/3d-models/drakefire-pistol-bee02e85f22d4eaaa3c0144f11204843) by Teliri (https://sketchfab.com/Teliri) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+
+obj, mat file created by Niko 
