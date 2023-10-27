@@ -464,26 +464,26 @@ Model<Mesh> loadObj(const std::filesystem::path& filepath, bool warnings = false
                     auto& vertex = vertices[index_offset + v];
 
                     detail::loadVertex(vertex, attrib, idx, filepath);
+                }
 
-                    if constexpr (!std::is_empty_v<typename Mesh::MaterialType>)
+                if constexpr (!std::is_empty_v<typename Mesh::MaterialType>)
+                {
+                    auto& meshGroups = mesh.materialGroups();
+                    unsigned int matIdx = shape.mesh.material_ids[f];
+
+                    if(!materialGroups.contains(matIdx))
                     {
-                        auto& meshGroups = mesh.materialGroups();
-                        unsigned int matIdx = shape.mesh.material_ids[f];
-
-                        if(!materialGroups.contains(matIdx))
-                        {
-                            materialGroups[matIdx] = meshGroups.size();
-                            meshGroups.emplace_back(model.materials()[matIdx]);
-                        }
-
-                        auto& materialIndices = meshGroups[materialGroups[matIdx]];
-
-                        materialIndices.indices.insert(materialIndices.indices.end(), {
-                                                           static_cast<unsigned int>(index_offset + 0),
-                                                           static_cast<unsigned int>(index_offset + 1),
-                                                           static_cast<unsigned int>(index_offset + 2)
-                                                       });
+                        materialGroups[matIdx] = meshGroups.size();
+                        meshGroups.emplace_back(model.materials()[matIdx]);
                     }
+
+                    auto& materialIndices = meshGroups[materialGroups[matIdx]];
+
+                    materialIndices.indices.insert(materialIndices.indices.end(), {
+                                                       static_cast<unsigned int>(index_offset + 0),
+                                                       static_cast<unsigned int>(index_offset + 1),
+                                                       static_cast<unsigned int>(index_offset + 2)
+                                                   });
                 }
 
                 if constexpr (detail::has_member<typename Mesh::VertexType>::tangent::value)
