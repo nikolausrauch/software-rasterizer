@@ -1,0 +1,11 @@
+Model Information:
+* title:	Bird
+* source:	https://sketchfab.com/3d-models/bird-e63479b07d8c4ae6a69b34247d572299
+* author:	Václav Pleticha (https://sketchfab.com/klidas8)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Bird" (https://sketchfab.com/3d-models/bird-e63479b07d8c4ae6a69b34247d572299) by Václav Pleticha (https://sketchfab.com/klidas8) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

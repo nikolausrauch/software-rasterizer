@@ -28,6 +28,8 @@ struct Sampler
 {
     Sampler() : m_texture(nullptr) {}
 
+    Sampler(Texture<T>& texture) : m_texture(&texture) {}
+
     Sampler& operator =(Texture<T>& texture)
     {
         m_texture = &texture;

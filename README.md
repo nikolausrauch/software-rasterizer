@@ -35,7 +35,7 @@ l.t.r. ["Sad toaster"](https://skfb.ly/on9Dn) by tasha.lime, ["Coatlicue"](https
     - [x] glfw/gl viewer
     - [x] model loading
   - [x] Blinn-Phong illumination
-  - [ ] Cel Shading
+  - [x] Cel Shading
   - [x] Normal Mapping
   - [x] Shadow Mapping
   - [X] Screen Space Ambient Occlusion
@@ -139,6 +139,10 @@ Screen-space ambient occlussion ("Pokemon FireRed - Player's Room" [Link](https:
 Physically-based rendering with pre-integrated irradiance and radiance maps ("Bilora Bella 46 Camera" [Link](https://sketchfab.com/3d-models/dae-bilora-bella-46-camera-game-ready-asset-eeb9d9f0627f4783b5d16a8732f0d1a4) by [Martijn Vaes](https://sketchfab.com/MartijnVaes) licensed under [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/))
 
 ![alt](img/example_pbr.png)
+
+Cel-Shading with post-process edge detection ("Bird" [Link](https://sketchfab.com/3d-models/bird-e63479b07d8c4ae6a69b34247d572299)
+ by [Václav Pleticha](https://sketchfab.com/klidas8) licensed under [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/))
+![alt](img/example_cel_shading.png)
 
 ## :books: Useful Resources
 [Tiny Renderer](https://github.com/ssloy/tinyrenderer/wiki/Lesson-0:-getting-started)   
