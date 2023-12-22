@@ -3,6 +3,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h> /* c-header as msvc seems to have an issue with cmath */
 #include <cassert>
+#include <cstdint>
 
 inline constexpr float PI = 3.1415926535897932384626433832795;
 inline constexpr float PI_two = 6.2831853071795864769252867665590;
