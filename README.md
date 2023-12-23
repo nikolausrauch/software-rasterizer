@@ -35,7 +35,7 @@ l.t.r. ["Sad toaster"](https://skfb.ly/on9Dn) by tasha.lime, ["Coatlicue"](https
     - [x] glfw/gl viewer
     - [x] model loading
   - [x] Blinn-Phong illumination
-  - [x] Cel Shading
+  - [x] Cel Shading with depth buffer edge detection
   - [x] Normal Mapping
   - [x] Shadow Mapping
   - [X] Screen Space Ambient Occlusion
@@ -100,7 +100,7 @@ buffer.vertices = { { {-0.5, -0.5, 0.5}, {1.0, 0.0, 0.0} },
 ```
 An instance of `Renderer` contains a default framebuffer with a color and depth target.
 
-After clearing the framebuffer, we submit a draw call with the previously defined shader program and vertex buffer.
+After clearing the framebuffer, a draw call can be submitted with the previously defined shader program and vertex buffer.
 
 <img src="img/00_triangle.png" align="right" height=250px>
 
@@ -121,28 +121,23 @@ rasterizer.framebuffer().color().save("00_triangle.png");
 ## Results
 
 Model Loading and Texture Mapping ("Sad toaster" [Link](https://skfb.ly/on9Dn) by tasha.lime.)
-
 ![alt](img/example_model.jpg)
 
 Blinn-Phong Illumination with diffuse, normal and ambient occlusion map ("Demon Skull" [Link](https://sketchfab.com/3d-models/demon-skull-0cb0efd8bd8a405f89ce5f757ecf6e8d) by Auxiar Molkhun)
-
 ![alt](img/example_ao_map.png)
 
-Shadow Mapping (based on "low poly house" [Link](https://sketchfab.com/3d-models/low-poly-house-02635c7c191848699e88085c2ab27538) by [cofitelle](https://sketchfab.com/cofitelle) licensed under CC-BY-4.0 [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/))
+Physically-based rendering with pre-integrated irradiance and radiance maps ("Bilora Bella 46 Camera" [Link](https://sketchfab.com/3d-models/dae-bilora-bella-46-camera-game-ready-asset-eeb9d9f0627f4783b5d16a8732f0d1a4) by [Martijn Vaes](https://sketchfab.com/MartijnVaes) licensed under [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/))
+![alt](img/example_pbr.png)
 
+Cel-Shading with post-process edge detection on the depth buffer ("Bird" [Link](https://sketchfab.com/3d-models/bird-e63479b07d8c4ae6a69b34247d572299)
+ by [Václav Pleticha](https://sketchfab.com/klidas8) licensed under [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/))
+![alt](img/example_cel_shading.png)
+
+Shadow Mapping (based on "low poly house" [Link](https://sketchfab.com/3d-models/low-poly-house-02635c7c191848699e88085c2ab27538) by [cofitelle](https://sketchfab.com/cofitelle) licensed under CC-BY-4.0 [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/))
 ![alt](img/example_shadow_mapping.png)
 
 Screen-space ambient occlussion ("Pokemon FireRed - Player's Room" [Link](https://sketchfab.com/3d-models/pokemon-firered-players-room-b23b6b253207463c97db2a7092adff74) by [Wesai](https://sketchfab.com/Wesai) licensed under [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/))
-
 ![alt](img/example_ssao.png)
-
-Physically-based rendering with pre-integrated irradiance and radiance maps ("Bilora Bella 46 Camera" [Link](https://sketchfab.com/3d-models/dae-bilora-bella-46-camera-game-ready-asset-eeb9d9f0627f4783b5d16a8732f0d1a4) by [Martijn Vaes](https://sketchfab.com/MartijnVaes) licensed under [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/))
-
-![alt](img/example_pbr.png)
-
-Cel-Shading with post-process edge detection ("Bird" [Link](https://sketchfab.com/3d-models/bird-e63479b07d8c4ae6a69b34247d572299)
- by [Václav Pleticha](https://sketchfab.com/klidas8) licensed under [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/))
-![alt](img/example_cel_shading.png)
 
 ## :books: Useful Resources
 [Tiny Renderer](https://github.com/ssloy/tinyrenderer/wiki/Lesson-0:-getting-started)   
